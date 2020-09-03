@@ -10,60 +10,143 @@ public class HandTracking : MonoBehaviour
     [SerializeField] private Text text_middlePinchStrength;
     [SerializeField] private OVRHand rightHand;
     [SerializeField] private OVRHand leftHand;
-    [SerializeField] private GameObject HandMenu;
-    [SerializeField] private Text text_HandMenuPosiotionX;
+    private OVRSkeleton rightHandSkeleton;
+    [SerializeField] private GameObject handMenu;
+    [SerializeField] private GameObject targetPrefab;
+
+    // デバッグ
+    [SerializeField] private Text handPoseText;
+    [SerializeField] private Text thumbText;    
     
-    // state
-    private bool isLeftIndexPinching;
-    private bool enabledHandMenu;
-    private float HandMenuPositionX;
+
+    
+    
+    private bool isLeftRingPinching;
     private bool releasedIndex;
     private bool releasedMiddle;
+    private float OpenPosetimerCount = 0.0f;
+    private float middleDoubleTaptimerCount = 0.0f;
+    private float tapTime;
+    private float doubleTapTime = 0.2f;
+    
 
-    // audio
+    // ハンドメニュー
+    private bool enabledhandMenu;
+    private Animator handMenuAnim;
+
+    // 効果音
     private AudioSource audioSource;
-    [SerializeField] AudioClip showHandMenuAudio;
-    [SerializeField] AudioClip HideHandMenuAudio;
+    [SerializeField] AudioClip showhandMenuAudio;
+    [SerializeField] AudioClip hidehandMenuAudio;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();  
 
         // ハンドメニューの初期化 
-        HandMenu.SetActive(false);
-        enabledHandMenu = false;
+        handMenu.SetActive(false);
+        enabledhandMenu = false;
+        handMenuAnim = handMenu.GetComponent<Animator>();
+
+        // ハンドトラッキング 
+        rightHandSkeleton = rightHand.GetComponent<OVRSkeleton>();
+
+        tapTime = Time.time;
     }
+
+
     
     
     void Update()
     {
-        if ((leftHand.GetFingerIsPinching(OVRHand.HandFinger.Index) && leftHand.GetFingerIsPinching(OVRHand.HandFinger.Thumb))
+        if ((leftHand.GetFingerIsPinching(OVRHand.HandFinger.Ring) && leftHand.GetFingerIsPinching(OVRHand.HandFinger.Thumb))
          || Input.GetKey(KeyCode.Space))
         {
-                isLeftIndexPinching = true;
+            isLeftRingPinching = true;
         } else {
-                isLeftIndexPinching = false;
+            isLeftRingPinching = false;
         }
 
-        if (isLeftIndexPinching) {
-            if (!enabledHandMenu) {
-                audioSource.PlayOneShot(showHandMenuAudio);
-                HandMenu.SetActive(true);
-                enabledHandMenu = true;
+        if ((leftHand.GetFingerIsPinching(OVRHand.HandFinger.Middle) && leftHand.GetFingerIsPinching(OVRHand.HandFinger.Thumb))
+        || Input.GetMouseButton(0))
+        {
+            if (releasedMiddle) {
+                float interval = Time.time - tapTime;
+                if (interval < doubleTapTime) {
+                    GameObject target = Instantiate(targetPrefab).gameObject;
+                    target.transform.position = new Vector3(
+                        leftHand.transform.position.x, 
+                        leftHand.transform.position.y-0.15f, 
+                        leftHand.transform.position.z);
+            }
+            tapTime = Time.time;
+            releasedMiddle = false;
+            }
+
+            
+            
+                        
+            
+        } else {
+            releasedMiddle = true;
+        }
+
+        
+        
+
+        if (isLeftRingPinching) {
+            if (!enabledhandMenu) {
+                audioSource.PlayOneShot(showhandMenuAudio);
+                handMenu.SetActive(true);
+                handMenuAnim.SetBool("Show", true);
+                
+                
+                enabledhandMenu = true;
             }
         } else {
-            if (enabledHandMenu) {
-                audioSource.PlayOneShot(HideHandMenuAudio);
-                HandMenu.SetActive(false);
-                enabledHandMenu = false;
+            if (enabledhandMenu) {
+                audioSource.PlayOneShot(hidehandMenuAudio);
+                handMenuAnim.SetBool("Show", false);
+                
+                // handMenu.SetActive(false);
+                enabledhandMenu = false;
             }
         }
-        
-        
 
+        // 右手を開いているかどうか
+        // thumbText.text = rightHand.GetFingerPinchStrength(OVRHand.HandFinger.Thumb).ToString();
+        // if (CheckOpenPose) {
+        //     handPoseText.text = "Pose: Open";
 
+        //     OpenPosetimerCount += Time.deltaTime;
+ 
+        //     if (OpenPosetimerCount >= 5f)
+        //     {
+        //         handPoseText.text = "Pose: Open 5 seconds";
+                
+        //     }
+        // } else {
+        //     handPoseText.text = "Pose: None";
+        //     OpenPosetimerCount = 0.0f;
+        // }
 
         
+    }
+
+    public bool CheckOpenPose
+    {
+        get
+        {
+            return (rightHand.GetFingerPinchStrength(OVRHand.HandFinger.Thumb) < 0.01f 
+            && rightHand.GetFingerPinchStrength(OVRHand.HandFinger.Index) < 0.01f
+            && rightHand.GetFingerPinchStrength(OVRHand.HandFinger.Middle) < 0.01f
+            && rightHand.GetFingerPinchStrength(OVRHand.HandFinger.Ring) < 0.01f
+            && rightHand.GetFingerPinchStrength(OVRHand.HandFinger.Pinky) < 0.01f);
+        }
+    }
+
+    void HideHandMenu() {
+        handMenu.SetActive(false);        
     }
 
 
