@@ -59,7 +59,7 @@ public class HandTracking : MonoBehaviour
     
     void Update()
     {
-        if ((leftHand.GetFingerIsPinching(OVRHand.HandFinger.Ring) && leftHand.GetFingerIsPinching(OVRHand.HandFinger.Thumb))
+        if ((leftHand.GetFingerIsPinching(OVRHand.HandFinger.Middle) && leftHand.GetFingerIsPinching(OVRHand.HandFinger.Thumb))
          || Input.GetKey(KeyCode.Space))
         {
             isLeftRingPinching = true;
