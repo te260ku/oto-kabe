@@ -11,11 +11,14 @@ public class BlockPlane : MonoBehaviour
     [SerializeField] private GameObject stagePrefab;
     private GameObject anchorsParent;
     private GameObject[] anchors = new GameObject[5];
+    
     // Start is called before the first frame update
     void Start()
     {
         anchorsParent = GameObject.Find("AnchorsParent");
         anchorsParent.transform.rotation = transform.rotation;
+
+        
     }
 
     // Update is called once per frame
@@ -40,22 +43,72 @@ public class BlockPlane : MonoBehaviour
                 (anchors[1].transform.localPosition.y + anchors[0].transform.localPosition.y) / 2, 
                 (anchors[2].transform.localPosition.z + anchors[0].transform.localPosition.z) / 2);
             Vector3 centerPos = new Vector3 (
-                (anchorsPos[2].x + anchorsPos[0].x) / 2,  
-                (anchorsPos[2].y + anchorsPos[0].y) / 2+0.1f,  
-                (anchorsPos[1].z + anchorsPos[0].z) / 2);
+                (anchorsPos[1].x + anchorsPos[0].x) / 2,  
+                (anchorsPos[2].y + anchorsPos[0].y) / 2,  
+                (anchorsPos[2].z + anchorsPos[0].z) / 2);
 
             Debug.Log(centerPos);
             Debug.Log(centerPosLocal);
 
             GameObject centerAnchor = Instantiate(anchorPrefab);
             
+            float width = Vector3.Distance(anchorsPos[0], anchorsPos[1]);
+            // float height = Vector3.Distance(anchorsPos[0], anchorsPos[2]);
+            // float width = (Mathf.Abs(anchorsPos[0].x-anchorsPos[1].x))/2;
+
+            float height = (Mathf.Abs(anchorsPos[0].z-anchorsPos[2].z))/2;
+            Debug.Log("width: " + width);
+            Debug.Log("height: " + height);
+            
             centerAnchor.transform.parent = anchorsParent.transform;
             centerAnchor.transform.position = centerPos;
             centerAnchor.transform.rotation = transform.rotation;
+
+            GameObject stage = Instantiate(stagePrefab);
+            // ***heightをどうするか
+            stage.transform.localScale = new Vector3(width/3, 0.1f, height/3);
+            stage.transform.position = centerAnchor.transform.position;
+
+            stage.transform.parent = transform;
+
+            Vector3 planeRot = transform.rotation.eulerAngles;
+            Vector3 center01 = new Vector3 (
+                (anchors[1].transform.localPosition.x + anchors[0].transform.localPosition.x) / 2,  
+                (anchors[1].transform.localPosition.y + anchors[0].transform.localPosition.y) / 2,  
+                (anchors[1].transform.localPosition.z + anchors[0].transform.localPosition.z) /2
+            );
+
+            Vector3 proj0 = Vector3.ProjectOnPlane(anchors[0].transform.localPosition, transform.position.normalized);
+            Vector3 proj1 = Vector3.ProjectOnPlane(anchors[1].transform.localPosition, transform.position.normalized);
+            
+            // float stageYaw = Vector3.SignedAngle(anchorsPos[0], anchorsPos[1], Vector3.up);
+            float stageYaw = Vector3.Angle(anchors[0].transform.position-anchors[1].transform.position, Vector3.right);
+
+            Vector3 stageRot = new Vector3(
+                0, 
+                // ***angleがおかしい
+                // Vector3.Angle(anchorsPos[0], anchorsPos[1]),
+                stageYaw, 
+                // Vector3.Angle(anchors[0].transform.localPosition, anchors[1].transform.localPosition),
+                // Vector3.Angle(anchorsPos[1] - center01, anchorsPos[0] - center01),  
+                0
+                
+                
+            );
+            
+            Debug.Log(Vector3.Angle(anchorsPos[0], anchorsPos[1]));
+            Debug.Log(stageYaw);
+            
+            
+            stage.transform.localRotation = Quaternion.Euler(stageRot);
+            
+            
+            
         }
 
         if (Input.GetKeyDown(KeyCode.T)) {
-
+            Debug.Log(Vector3.Angle(anchors[0].transform.position-anchors[1].transform.position, Vector3.right));
+            
         }
     }
 

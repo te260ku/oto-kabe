@@ -10,8 +10,11 @@ public class StageGnerator : MonoBehaviour
     [SerializeField] private GameObject[] anchors = new GameObject[3];
     [SerializeField] private GameObject middle1Sphere;
     [SerializeField] private GameObject blockPlanePrefab;
+    [SerializeField] private GameObject stagePrefab;
     void Start()
     {
+
+        Debug.Log(Vector3.SignedAngle(anchors[0].transform.position, anchors[1].transform.position, Vector3.up));
 
         vertexes[0] = anchors[0].transform.position;
         vertexes[1] = anchors[1].transform.position;
@@ -40,6 +43,7 @@ public class StageGnerator : MonoBehaviour
         GameObject blockPlane = Instantiate(blockPlanePrefab);
         blockPlane.transform.position = middle1Sphere.transform.position;
         blockPlane.transform.rotation = middle1Sphere.transform.rotation;
+
         
 
         // GameObject block = Instantiate(blockPrefab);

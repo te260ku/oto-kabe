@@ -124,5 +124,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anchorPrefab: {fileID: 1438579398902010045, guid: 563022fff676e4e598dd5a548c65f154,
     type: 3}
-  stagePrefab: {fileID: 7049945199912864133, guid: 36e294019c3a2452ba11b787ce388b8b,
+  stagePrefab: {fileID: 8509339345565297789, guid: 2a46a9568f1944a7991c9dc402499d6e,
     type: 3}
