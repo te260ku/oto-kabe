@@ -16,9 +16,6 @@ public class StageGnerator : MonoBehaviour
         vertexes[0] = anchors[0].transform.position;
         vertexes[1] = anchors[1].transform.position;
         vertexes[2] = anchors[2].transform.position;
-
-        float angle = Vector3.Angle(anchors[0].transform.position, anchors[1].transform.position);
-		Debug.Log (angle);
         
         
         
@@ -37,7 +34,7 @@ public class StageGnerator : MonoBehaviour
         float tmp = dot/Mathf.Pow(dist, 2);
         Vector3 adash = anchors[2].transform.position - tmp*ab;
 
-        // GameObject block = Instantiate(blockPrefab);
+        
 
 
         GameObject blockPlane = Instantiate(blockPlanePrefab);
@@ -45,6 +42,7 @@ public class StageGnerator : MonoBehaviour
         blockPlane.transform.rotation = middle1Sphere.transform.rotation;
         
 
+        // GameObject block = Instantiate(blockPrefab);
         // block.transform.localScale = new Vector3(width/3, 0.1f, height/3);
         // block.transform.position = adash;
         // block.transform.rotation = Quaternion.FromToRotation(Vector3.up, vec);
@@ -53,8 +51,8 @@ public class StageGnerator : MonoBehaviour
         
 
 
-        // float width = vertexes[1].x-vertexes[0].x;
-        // float height = vertexes[1].z-vertexes[0].z;
+        width = vertexes[1].x-vertexes[0].x;
+        height = vertexes[1].z-vertexes[0].z;
 
         // // 3*3のマトリックスを生成する
         // for (int i=0; i<3; i++) {
