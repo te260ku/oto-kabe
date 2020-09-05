@@ -8,6 +8,8 @@ public class StageGnerator : MonoBehaviour
     private Vector3[] vertexes = new Vector3[5];
     [SerializeField] private GameObject blockPrefab;
     [SerializeField] private GameObject[] anchors = new GameObject[3];
+    [SerializeField] private GameObject middle1Sphere;
+    [SerializeField] private GameObject blockPlanePrefab;
     void Start()
     {
 
@@ -34,9 +36,17 @@ public class StageGnerator : MonoBehaviour
         float dot = Vector3.Dot(ab, ac);
         float tmp = dot/Mathf.Pow(dist, 2);
         Vector3 adash = anchors[2].transform.position - tmp*ab;
-        GameObject block = Instantiate(blockPrefab);
+
+        // GameObject block = Instantiate(blockPrefab);
+
+
+        GameObject blockPlane = Instantiate(blockPlanePrefab);
+        blockPlane.transform.position = middle1Sphere.transform.position;
+        blockPlane.transform.rotation = middle1Sphere.transform.rotation;
+        
+
         // block.transform.localScale = new Vector3(width/3, 0.1f, height/3);
-        block.transform.position = adash;
+        // block.transform.position = adash;
         // block.transform.rotation = Quaternion.FromToRotation(Vector3.up, vec);
 
         
