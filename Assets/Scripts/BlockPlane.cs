@@ -38,10 +38,14 @@ public class BlockPlane : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.S)) {
+
+
             Vector3 centerPosLocal = new Vector3 (
                 (anchors[1].transform.localPosition.x + anchors[0].transform.localPosition.x) / 2,  
                 (anchors[1].transform.localPosition.y + anchors[0].transform.localPosition.y) / 2, 
                 (anchors[2].transform.localPosition.z + anchors[0].transform.localPosition.z) / 2);
+
+            // ***centerの座標がずれている
             Vector3 centerPos = new Vector3 (
                 (anchorsPos[1].x + anchorsPos[0].x) / 2,  
                 (anchorsPos[2].y + anchorsPos[0].y) / 2,  
@@ -51,12 +55,33 @@ public class BlockPlane : MonoBehaviour
             Debug.Log(centerPosLocal);
 
             GameObject centerAnchor = Instantiate(anchorPrefab);
+
+            Vector3 proj0 = Vector3.ProjectOnPlane(anchors[0].transform.localPosition, transform.position.normalized);
+            Vector3 proj1 = Vector3.ProjectOnPlane(anchors[1].transform.localPosition, transform.position.normalized);
+            Vector3 proj2 = Vector3.ProjectOnPlane(anchors[2].transform.localPosition, transform.position.normalized);
+
+            Vector3 vec = ( anchors[2].transform.position - anchors[0].transform.position ).normalized;
+            Vector3 ab = anchors[1].transform.position-anchors[0].transform.position;
+            float dist = Vector3.Distance(anchors[1].transform.position, anchors[0].transform.position);
+            Vector3 ac = anchors[2].transform.position-anchors[0].transform.position;
+            float dot = Vector3.Dot(ab, ac);
+            float tmp = dot/Mathf.Pow(dist, 2);
+            Vector3 adash = anchors[2].transform.position - tmp*ab;
+            GameObject adashAnchor = Instantiate(anchorPrefab);
+            adashAnchor.transform.position = adash;
+            adashAnchor.transform.rotation = Quaternion.FromToRotation(Vector3.up, vec);
+
             
             float width = Vector3.Distance(anchorsPos[0], anchorsPos[1]);
+            float height = Vector3.Distance(anchorsPos[0], adashAnchor.transform.position);
+            // float height = (Mathf.Abs(proj0.z-proj2.z))/2;
             // float height = Vector3.Distance(anchorsPos[0], anchorsPos[2]);
             // float width = (Mathf.Abs(anchorsPos[0].x-anchorsPos[1].x))/2;
 
-            float height = (Mathf.Abs(anchorsPos[0].z-anchorsPos[2].z))/2;
+
+            
+
+
             Debug.Log("width: " + width);
             Debug.Log("height: " + height);
             
@@ -78,8 +103,7 @@ public class BlockPlane : MonoBehaviour
                 (anchors[1].transform.localPosition.z + anchors[0].transform.localPosition.z) /2
             );
 
-            Vector3 proj0 = Vector3.ProjectOnPlane(anchors[0].transform.localPosition, transform.position.normalized);
-            Vector3 proj1 = Vector3.ProjectOnPlane(anchors[1].transform.localPosition, transform.position.normalized);
+            
             
             // float stageYaw = Vector3.SignedAngle(anchorsPos[0], anchorsPos[1], Vector3.up);
             float stageYaw = Vector3.Angle(anchors[0].transform.position-anchors[1].transform.position, Vector3.right);
