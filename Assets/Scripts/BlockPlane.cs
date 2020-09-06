@@ -45,14 +45,7 @@ public class BlockPlane : MonoBehaviour
                 (anchors[1].transform.localPosition.y + anchors[0].transform.localPosition.y) / 2, 
                 (anchors[2].transform.localPosition.z + anchors[0].transform.localPosition.z) / 2);
 
-            // ***centerの座標がずれている
-            Vector3 centerPos = new Vector3 (
-                (anchorsPos[1].x + anchorsPos[0].x) / 2,  
-                (anchorsPos[2].y + anchorsPos[0].y) / 2,  
-                (anchorsPos[2].z + anchorsPos[0].z) / 2);
-
-            Debug.Log(centerPos);
-            Debug.Log(centerPosLocal);
+            
 
             GameObject centerAnchor = Instantiate(anchorPrefab);
 
@@ -74,10 +67,21 @@ public class BlockPlane : MonoBehaviour
             
             float width = Vector3.Distance(anchorsPos[0], anchorsPos[1]);
             float height = Vector3.Distance(anchorsPos[0], adashAnchor.transform.position);
-            // float height = (Mathf.Abs(proj0.z-proj2.z))/2;
-            // float height = Vector3.Distance(anchorsPos[0], anchorsPos[2]);
-            // float width = (Mathf.Abs(anchorsPos[0].x-anchorsPos[1].x))/2;
+            
+            
+            // ***centerの座標がずれている
+            // Vector3 centerPos = new Vector3 (
+            //     (anchorsPos[1].x + anchorsPos[0].x) / 2,  
+            //     (anchorsPos[2].y + anchorsPos[0].y) / 2,  
+            //     (anchorsPos[2].z + anchorsPos[0].z) / 2);
 
+            Vector3 centerPos = new Vector3 (
+                (anchorsPos[1].x + adash.x) / 2,  
+                (anchorsPos[1].y + adash.y) / 2,  
+                (anchorsPos[1].z + adash.z) / 2);
+
+            Debug.Log(centerPos);
+            Debug.Log(centerPosLocal);
 
             
 
@@ -132,7 +136,8 @@ public class BlockPlane : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T)) {
             Debug.Log(Vector3.Angle(anchors[0].transform.position-anchors[1].transform.position, Vector3.right));
-            
+
+
         }
     }
 
