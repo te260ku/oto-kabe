@@ -27,7 +27,7 @@ public class HandTracking : MonoBehaviour
     private float OpenPosetimerCount = 0.0f;
     private float middleDoubleTaptimerCount = 0.0f;
     private float tapTime;
-    private float doubleTapTime = 0.2f;
+    private float doubleTapTime = 0.25f;
     
 
     // ハンドメニュー
@@ -67,14 +67,14 @@ public class HandTracking : MonoBehaviour
             isLeftRingPinching = false;
         }
 
-        if ((leftHand.GetFingerIsPinching(OVRHand.HandFinger.Middle) && leftHand.GetFingerIsPinching(OVRHand.HandFinger.Thumb))
+        if ((leftHand.GetFingerIsPinching(OVRHand.HandFinger.Index) && leftHand.GetFingerIsPinching(OVRHand.HandFinger.Thumb))
         || Input.GetMouseButton(0))
         {
             if (releasedMiddle) {
                 float interval = Time.time - tapTime;
                 if (interval < doubleTapTime) {
-                    GameObject target = Instantiate(targetPrefab).gameObject;
-                    target.transform.position = new Vector3(
+                    // GameObject target = Instantiate(targetPrefab).gameObject;
+                    targetPrefab.transform.position = new Vector3(
                         leftHand.transform.position.x, 
                         leftHand.transform.position.y-0.15f, 
                         leftHand.transform.position.z);

@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandFollower : MonoBehaviour
+public class MiddleFollower : MonoBehaviour
 {
     [SerializeField] private GameObject rightHand;
 
-    [SerializeField] private StageGenerator stageGenerator;
-
     // 状態管理
-    private bool isTouchingPlane;
+    public bool isTouchingPlane;
 
     // 効果音
     private AudioSource audioSource;
@@ -27,7 +25,8 @@ public class HandFollower : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        transform.position = rightHand.transform.position;
+        // transform.position = rightHand.transform.position;
+        // transform.rotation = rightHand.transform.rotation;
     }
 
     void OnTriggerEnter(Collider other)
@@ -56,19 +55,5 @@ public class HandFollower : MonoBehaviour
         }
     }
 
-    public void ButtonPush(int buttonNum) {
 
-        if (buttonNum == 1) {
-            stageGenerator.CreatePlane(gameObject);
-        } else {
-            if (isTouchingPlane) {
-                if (buttonNum == 2) {
-
-                } else if (buttonNum == 3) {
-
-                }
-            }
-        }
-        
-    }
 }
