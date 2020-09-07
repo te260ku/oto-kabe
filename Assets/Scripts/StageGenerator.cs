@@ -149,15 +149,22 @@ public class StageGenerator : MonoBehaviour
             float width = Vector3.Distance(anchorPos[0], anchorPos[1]);
             float height = Vector3.Distance(anchorPos[0], adashAnchor.transform.position);
 
+            Debug.Log("width: " + width);
+            Debug.Log("height: " + height);
+
+
 
             // ステージを生成する
             GameObject stage = Instantiate(stagePrefab);
+
             
-            // ステージの大きさを調整する
-            stage.transform.localScale = new Vector3(width/3, 0.1f, height/3);
+
             // ステージの座標を中心点に合わせる
             stage.transform.position = centerAnchor.transform.position;
             stage.transform.parent = planeTransform.transform;
+
+            // ステージの大きさを調整する
+            stage.transform.localScale = new Vector3(width*3, 0.1f, height*3);
     
             // ステージの傾きを調整する
             float stageYaw = Vector3.Angle(anchors[0].transform.position-anchors[1].transform.position, Vector3.right);
