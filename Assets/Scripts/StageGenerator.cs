@@ -8,6 +8,7 @@ public class StageGenerator : MonoBehaviour
     [SerializeField] private GameObject stagePlanePrefab;
     [SerializeField] private GameObject middleSphere;
     private MiddleFollower middleFollower;
+    [SerializeField] private IndexTip indexTip;
 
 
     private Transform planeTransform;
@@ -17,8 +18,12 @@ public class StageGenerator : MonoBehaviour
     [SerializeField] private GameObject anchorPrefab;
     [SerializeField] private GameObject stagePrefab;
     [SerializeField] private GameObject anchorsParent;
+    private GameObject stage;
+
 
     [SerializeField] private ButtonController _buttonController;
+    [SerializeField] private MovableSlider widthSlider;
+    [SerializeField] private MovableSlider heightSlider;
 
     // 状態管理
     private bool existsPlane;
@@ -42,6 +47,13 @@ public class StageGenerator : MonoBehaviour
                 SetAnchor(middleSphere);
             }
         };
+
+        
+    }
+
+    float Map(float value, float start1, float stop1, float start2, float stop2)
+    {
+        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
     }
 
     
@@ -59,6 +71,27 @@ public class StageGenerator : MonoBehaviour
             eulerAngleX = Mathf.Clamp(eulerAngleX, 0f, 360f);
             Debug.Log(eulerAngleX);
         }
+
+        if (indexTip.isGrabbbing) {
+            
+            float width = widthSlider.value;
+            float height = heightSlider.value;
+            
+            float mappedWidth = Map(width, -0.2f, 0.2f, 0.1f, 1f);
+            float mappedHeight = Map(height, -0.2f, 0.2f, 0.1f, 2f);
+
+            
+
+            if (stage) {
+                stage.transform.localScale = new Vector3(
+                mappedWidth, 
+                1f, 
+                mappedHeight
+            );
+            }
+            
+        }
+        
     }
 
     public void CreatePlane(GameObject middleSphere) {
@@ -119,82 +152,93 @@ public class StageGenerator : MonoBehaviour
             
             anchorCount++;
         }
-
-            
-
-
     }
 
     public void CreateStage() {
 
-            // adashを算出する
-            Vector3 vec = ( anchors[2].transform.position - anchors[0].transform.position ).normalized;
-            Vector3 ab = anchors[1].transform.position-anchors[0].transform.position;
-            float dist = Vector3.Distance(anchors[1].transform.position, anchors[0].transform.position);
-            Vector3 ac = anchors[2].transform.position-anchors[0].transform.position;
-            float dot = Vector3.Dot(ab, ac);
-            float tmp = dot/Mathf.Pow(dist, 2);
-            Vector3 adash = anchors[2].transform.position - tmp*ab;
-            GameObject adashAnchor = Instantiate(anchorPrefab);
-            adashAnchor.transform.parent = anchorsParent.transform;
-            adashAnchor.transform.position = adash;
-            // adashAnchor.transform.rotation = Quaternion.FromToRotation(Vector3.up, vec);
+        if (!existsPlane) {
+            existsPlane = true;
+            GameObject originalStage = Instantiate(stagePrefab);
+            
+            originalStage.transform.position = middleSphere.transform.position;
+            originalStage.transform.rotation = middleSphere.transform.rotation;
 
-            // ステージの中心点を算出する
-            Vector3 centerPos = new Vector3 (
-                (anchorPos[1].x + adash.x) / 2,  
-                (anchorPos[1].y + adash.y) / 2,  
-                (anchorPos[1].z + adash.z) / 2);
-            GameObject centerAnchor = Instantiate(anchorPrefab);
-            centerAnchor.transform.parent = anchorsParent.transform;
-            centerAnchor.transform.position = centerPos;
-            // centerAnchor.transform.rotation = planeTransform.rotation;
+            // anchorの親オブジェクトをplaneの傾きに合わせる
+            anchorsParent.transform.rotation = originalStage.transform.rotation;
+            planeTransform = originalStage.transform;
 
-            // ステージの高さと幅を算出する
-            float width = Vector3.Distance(anchorPos[0], anchorPos[1]);
-            float height = Vector3.Distance(anchorPos[0], adashAnchor.transform.position);
+            stage = originalStage;
 
-            Debug.Log("width: " + width);
-            Debug.Log("height: " + height);
+        }
+
+            // // adashを算出する
+            // Vector3 vec = ( anchors[2].transform.position - anchors[0].transform.position ).normalized;
+            // Vector3 ab = anchors[1].transform.position-anchors[0].transform.position;
+            // float dist = Vector3.Distance(anchors[1].transform.position, anchors[0].transform.position);
+            // Vector3 ac = anchors[2].transform.position-anchors[0].transform.position;
+            // float dot = Vector3.Dot(ab, ac);
+            // float tmp = dot/Mathf.Pow(dist, 2);
+            // Vector3 adash = anchors[2].transform.position - tmp*ab;
+            // GameObject adashAnchor = Instantiate(anchorPrefab);
+            // adashAnchor.transform.parent = anchorsParent.transform;
+            // adashAnchor.transform.position = adash;
+            // // adashAnchor.transform.rotation = Quaternion.FromToRotation(Vector3.up, vec);
+
+            // // ステージの中心点を算出する
+            // Vector3 centerPos = new Vector3 (
+            //     (anchorPos[1].x + adash.x) / 2,  
+            //     (anchorPos[1].y + adash.y) / 2,  
+            //     (anchorPos[1].z + adash.z) / 2);
+            // GameObject centerAnchor = Instantiate(anchorPrefab);
+            // centerAnchor.transform.parent = anchorsParent.transform;
+            // centerAnchor.transform.position = centerPos;
+            // // centerAnchor.transform.rotation = planeTransform.rotation;
+
+            // // ステージの高さと幅を算出する
+            // float width = Vector3.Distance(anchorPos[0], anchorPos[1]);
+            // float height = Vector3.Distance(anchorPos[0], adashAnchor.transform.position);
+
+            // Debug.Log("width: " + width);
+            // Debug.Log("height: " + height);
 
 
 
-            // ステージを生成する
-            GameObject stage = Instantiate(stagePrefab);
+            // // ステージを生成する
+            // GameObject stage = Instantiate(stagePrefab);
 
             
 
-            // ステージの座標を中心点に合わせる
-            stage.transform.position = centerAnchor.transform.position;
+            // // ステージの座標を中心点に合わせる
+            // stage.transform.position = centerAnchor.transform.position;
             
-            stage.transform.parent = planeTransform.transform;
+            // stage.transform.parent = planeTransform.transform;
 
-            // ステージの大きさを調整する
-            stage.transform.localScale = new Vector3(width*3, 0.1f, height*3);
+            // // ステージの大きさを調整する
+            // stage.transform.localScale = new Vector3(width*3, 0.1f, height*3);
     
-            // ステージの傾きを調整する
-            float planeRotY = planeTransform.rotation.eulerAngles.y;
-            // if (180f < planeRotY) {
-            //     planeRotY = 360 - planeRotY;
-            // }
-            float stageYaw = Vector3.Angle(anchors[0].transform.position-anchors[1].transform.position, Vector3.right);
-            Vector3 stageRot = new Vector3(
-                0, 
-                -planeRotY-stageYaw, 
-                0
-            );
+            // // ステージの傾きを調整する
+            // float planeRotY = planeTransform.rotation.eulerAngles.y;
+            // // if (180f < planeRotY) {
+            // //     planeRotY = 360 - planeRotY;
+            // // }
+            // float stageYaw = Vector3.Angle(anchors[0].transform.position-anchors[1].transform.position, Vector3.right);
+            // Vector3 stageRot = new Vector3(
+            //     0, 
+            //     -planeRotY-stageYaw, 
+            //     0
+            // );
             
-            Debug.Log(planeRotY);
-            Debug.Log(stageYaw);
-            // stage.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
-            stage.transform.localRotation = Quaternion.Euler(stageRot);
+            // Debug.Log(planeRotY);
+            // Debug.Log(stageYaw);
+            // // stage.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+            // stage.transform.localRotation = Quaternion.Euler(stageRot);
 
-            // stage.transform.localRotation = Quaternion.Euler(new Vector3(
-            //     0f, 
-            //     -planeRotY, 
-            //     0f
-            // ));
-            // stage.transform.Rotate(0f, -planeRotY, 0f);
+            // // stage.transform.localRotation = Quaternion.Euler(new Vector3(
+            // //     0f, 
+            // //     -planeRotY, 
+            // //     0f
+            // // ));
+            // // stage.transform.Rotate(0f, -planeRotY, 0f);
             
     }
 }
