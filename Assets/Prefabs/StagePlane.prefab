@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2e4462a014db34c0299bba51b1ab16ff, type: 2}
+  - {fileID: 2100000, guid: 1bfc235f4f5e34a40b900a1e64ab085a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -122,7 +122,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ae377dd82284556b71ab8e43e62fdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anchorPrefab: {fileID: 1438579398902010045, guid: 563022fff676e4e598dd5a548c65f154,
-    type: 3}
-  stagePrefab: {fileID: 8509339345565297789, guid: 2a46a9568f1944a7991c9dc402499d6e,
-    type: 3}

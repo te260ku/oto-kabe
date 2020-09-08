@@ -53,6 +53,11 @@ public class StageGenerator : MonoBehaviour
             SetAnchor(middleSphere);
         } else if (Input.GetKeyDown(KeyCode.E)) {
             CreateStage();
+        } else if (Input.GetKeyDown(KeyCode.T)) {
+            
+            float eulerAngleX = planeTransform.rotation.eulerAngles.y;
+            eulerAngleX = Mathf.Clamp(eulerAngleX, 0f, 360f);
+            Debug.Log(eulerAngleX);
         }
     }
 
@@ -161,18 +166,35 @@ public class StageGenerator : MonoBehaviour
 
             // ステージの座標を中心点に合わせる
             stage.transform.position = centerAnchor.transform.position;
+            
             stage.transform.parent = planeTransform.transform;
 
             // ステージの大きさを調整する
             stage.transform.localScale = new Vector3(width*3, 0.1f, height*3);
     
             // ステージの傾きを調整する
+            float planeRotY = planeTransform.rotation.eulerAngles.y;
+            // if (180f < planeRotY) {
+            //     planeRotY = 360 - planeRotY;
+            // }
             float stageYaw = Vector3.Angle(anchors[0].transform.position-anchors[1].transform.position, Vector3.right);
             Vector3 stageRot = new Vector3(
                 0, 
-                stageYaw, 
+                -planeRotY-stageYaw, 
                 0
             );
+            
+            Debug.Log(planeRotY);
+            Debug.Log(stageYaw);
+            // stage.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
             stage.transform.localRotation = Quaternion.Euler(stageRot);
+
+            // stage.transform.localRotation = Quaternion.Euler(new Vector3(
+            //     0f, 
+            //     -planeRotY, 
+            //     0f
+            // ));
+            // stage.transform.Rotate(0f, -planeRotY, 0f);
+            
     }
 }

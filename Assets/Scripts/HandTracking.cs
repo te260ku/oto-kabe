@@ -78,6 +78,7 @@ public class HandTracking : MonoBehaviour
                         leftHand.transform.position.x, 
                         leftHand.transform.position.y-0.15f, 
                         leftHand.transform.position.z);
+                    
             }
             tapTime = Time.time;
             releasedMiddle = false;

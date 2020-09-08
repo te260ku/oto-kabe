@@ -25,8 +25,8 @@ public class MiddleFollower : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        // transform.position = rightHand.transform.position;
-        // transform.rotation = rightHand.transform.rotation;
+        transform.position = rightHand.transform.position;
+        transform.rotation = rightHand.transform.rotation;
     }
 
     void OnTriggerEnter(Collider other)
