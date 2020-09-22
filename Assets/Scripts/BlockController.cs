@@ -33,8 +33,6 @@ public class BlockController : MonoBehaviour
             Ray ray = new Ray();
             RaycastHit hit = new RaycastHit();
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            //マウスクリックした場所からRayを飛ばし、オブジェクトがあればtrue 
             if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity))
             {
                 if(hit.collider.gameObject.CompareTag("Target"))
@@ -50,7 +48,7 @@ public class BlockController : MonoBehaviour
         Block target = blocks[nextBlockNum];
         
         
-            target.SetColor();
+            target.ActivateBlock();
             // audioSource.PlayOneShot(hitBlockAudio);
         
 

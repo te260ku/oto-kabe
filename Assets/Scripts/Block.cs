@@ -7,10 +7,11 @@ public class Block : MonoBehaviour
     public enum STEP {
         NONE = -1, 
         IDLE = 0, 
-        FLASH, 
+        ACTIVE, 
         NUM, 
     }
     public STEP step;
+    private float timer = 0.0f;
     void Start()
     {
         step = STEP.IDLE;
@@ -19,11 +20,29 @@ public class Block : MonoBehaviour
     
     void Update()
     {
-        
+        switch (step)
+        {
+            case STEP.ACTIVE:
+                timer += Time.deltaTime;
+                break;
+            default:
+                break;
+        }
+
+        if (timer > 3f) {
+            DeactivateBlock();
+            timer = 0.0f;
+        }
     }
 
-    public void SetColor() {
+
+    public void ActivateBlock() {
+        step = STEP.ACTIVE;
         GetComponent<Renderer>().material.color = Color.blue;
+    }
+    public void DeactivateBlock() {
+        step = STEP.IDLE;
+        GetComponent<Renderer>().material.color = Color.white;
     }
 
     
