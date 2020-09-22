@@ -13,27 +13,33 @@ public class MiddleFollower : MonoBehaviour
     // 効果音
     private AudioSource audioSource;
     [SerializeField] private AudioClip hitBlockAudio;
-    // Start is called before the first frame update
+
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         rightSkelton = rightHand.GetComponent<OVRSkeleton>();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = new Ray();
+            RaycastHit hit = new RaycastHit();
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity))
+            {
+                if(hit.collider.gameObject.CompareTag("Target"))
+                {
+                    hit.collider.gameObject.GetComponent<Renderer>().material.color = Color.white;
+                    audioSource.PlayOneShot(hitBlockAudio);
+                }
+            }
+        }
     }
 
     private void FixedUpdate() {
-        // transform.position = new Vector3 (
-        //     rightHand.transform.position.x, 
-        //     rightHand.transform.position.y+0.1f, 
-        //     rightHand.transform.position.z
-        // );
-        // transform.rotation = rightHand.transform.localRotation;
-
         #if UNITY_EDITOR
         #else
             Vector3 indexTipPos = rightSkelton.Bones[(int)OVRSkeleton.BoneId.Hand_Middle1].Transform.position;
@@ -41,6 +47,9 @@ public class MiddleFollower : MonoBehaviour
             this.transform.position = indexTipPos;
             this.transform.rotation = indexTipRot;
         #endif
+
+        
+        
     }
 
     void OnTriggerEnter(Collider other)

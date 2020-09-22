@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    public enum STEP {
+    public enum STATE {
         NONE = -1, 
         IDLE = 0, 
         ACTIVE, 
         NUM, 
     }
-    public STEP step;
+    public STATE state;
     private float timer = 0.0f;
     void Start()
     {
-        step = STEP.IDLE;
+        state = STATE.IDLE;
     }
 
     
     void Update()
     {
-        switch (step)
+        switch (state)
         {
-            case STEP.ACTIVE:
+            case STATE.ACTIVE:
                 timer += Time.deltaTime;
                 break;
             default:
@@ -37,11 +37,11 @@ public class Block : MonoBehaviour
 
 
     public void ActivateBlock() {
-        step = STEP.ACTIVE;
+        state = STATE.ACTIVE;
         GetComponent<Renderer>().material.color = Color.blue;
     }
     public void DeactivateBlock() {
-        step = STEP.IDLE;
+        state = STATE.IDLE;
         GetComponent<Renderer>().material.color = Color.white;
     }
 
