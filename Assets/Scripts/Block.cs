@@ -22,5 +22,9 @@ public class Block : MonoBehaviour
         
     }
 
+    public void SetColor() {
+        GetComponent<Renderer>().material.color = Color.blue;
+    }
+
     
 }

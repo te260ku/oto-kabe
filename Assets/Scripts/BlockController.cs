@@ -8,15 +8,13 @@ public class BlockController : MonoBehaviour
     private Block[] blocks = new Block[9];
     void Start()
     {
-        GameObject[] blockObject = new GameObject[9];
-        int c1 = 0;
+        GameObject[] blockObjects = new GameObject[9];
+        int count = 0;
         foreach (Transform child in this.transform){
-            blockObject[c1] = child.gameObject;
-            c1++;
-        }
-        foreach (GameObject child in blockObject){
-            blocks[c1] = child.gameObject.GetComponent<Block>();
-            c1++;
+            blocks[count] = child.gameObject.GetComponent<Block>();
+            // blocks[count] = blockObjects[count].GetComponent<Block>();
+            
+            count++;
         }
 
         
@@ -27,17 +25,34 @@ public class BlockController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R)) {
             SetNextBlock();
-        }   
+        }  
+        
+      
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = new Ray();
+            RaycastHit hit = new RaycastHit();
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            //マウスクリックした場所からRayを飛ばし、オブジェクトがあればtrue 
+            if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity))
+            {
+                if(hit.collider.gameObject.CompareTag("Target"))
+                {
+                    hit.collider.gameObject.GetComponent<Renderer>().material.color = Color.white;
+                }
+            }
+        }
     }
 
     private void SetNextBlock() {
         int nextBlockNum = Random.Range(0, 9);
         Block target = blocks[nextBlockNum];
         
-        if (target.tag == "Target") {
-            target.GetComponent<Renderer>().material.color = Color.blue;
+        
+            target.SetColor();
             // audioSource.PlayOneShot(hitBlockAudio);
-        }
+        
 
     }
 }
