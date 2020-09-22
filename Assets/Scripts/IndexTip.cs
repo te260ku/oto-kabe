@@ -27,6 +27,7 @@ public class IndexTip : MonoBehaviour
         #else
             isIndexPinching = rightHand.GetFingerIsPinching(OVRHand.HandFinger.Index);
             thumbPinchStrength = rightHand.GetFingerPinchStrength(OVRHand.HandFinger.Thumb);
+            isGrabbbing = true;
         #endif
 
         
@@ -70,22 +71,7 @@ public class IndexTip : MonoBehaviour
             isGrabbbing = false;
         }
 
-        } else {
-
-            if (thumbPinchStrength>0.9)
-        {
-            other.gameObject.transform.parent = this.transform;
-            
-            other.gameObject.transform.localPosition = Vector3.zero;
-
-        }
-        else
-        {
-            
-            other.transform.parent = null;
-
-        }
-        }
+        } 
         
     }
 

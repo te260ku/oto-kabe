@@ -5,6 +5,7 @@ using UnityEngine;
 public class MiddleFollower : MonoBehaviour
 {
     [SerializeField] private GameObject rightHand;
+    private OVRSkeleton rightSkelton;
 
     // 状態管理
     public bool isTouchingPlane;
@@ -16,6 +17,7 @@ public class MiddleFollower : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        rightSkelton = rightHand.GetComponent<OVRSkeleton>();
     }
 
     // Update is called once per frame
@@ -25,8 +27,20 @@ public class MiddleFollower : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        transform.position = rightHand.transform.position;
-        transform.rotation = rightHand.transform.rotation;
+        // transform.position = new Vector3 (
+        //     rightHand.transform.position.x, 
+        //     rightHand.transform.position.y+0.1f, 
+        //     rightHand.transform.position.z
+        // );
+        // transform.rotation = rightHand.transform.localRotation;
+
+        #if UNITY_EDITOR
+        #else
+            Vector3 indexTipPos = rightSkelton.Bones[(int)OVRSkeleton.BoneId.Hand_Middle1].Transform.position;
+            Quaternion indexTipRot = rightSkelton.Bones[(int)OVRSkeleton.BoneId.Hand_Middle1].Transform.rotation;
+            this.transform.position = indexTipPos;
+            this.transform.rotation = indexTipRot;
+        #endif
     }
 
     void OnTriggerEnter(Collider other)

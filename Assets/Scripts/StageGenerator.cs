@@ -77,15 +77,15 @@ public class StageGenerator : MonoBehaviour
             float width = widthSlider.value;
             float height = heightSlider.value;
             
-            float mappedWidth = Map(width, -0.2f, 0.2f, 0.1f, 1f);
-            float mappedHeight = Map(height, -0.2f, 0.2f, 0.1f, 2f);
+            float mappedWidth = Map(width, -0.2f, 0.2f, 0.05f, 0.3f);
+            float mappedHeight = Map(height, -0.2f, 0.2f, 0.05f, 0.3f);
 
             
 
             if (stage) {
                 stage.transform.localScale = new Vector3(
                 mappedWidth, 
-                1f, 
+                0.5f, 
                 mappedHeight
             );
             }

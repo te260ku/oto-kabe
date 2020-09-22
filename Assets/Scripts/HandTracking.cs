@@ -13,6 +13,7 @@ public class HandTracking : MonoBehaviour
     private OVRSkeleton rightHandSkeleton;
     [SerializeField] private GameObject handMenu;
     [SerializeField] private GameObject targetPrefab;
+    private GameObject centerEyeAnchor;
 
     // デバッグ
     [SerializeField] private Text handPoseText;
@@ -52,6 +53,8 @@ public class HandTracking : MonoBehaviour
         rightHandSkeleton = rightHand.GetComponent<OVRSkeleton>();
 
         tapTime = Time.time;
+
+        centerEyeAnchor = GameObject.Find("CenterEyeAnchor");
     }
 
 
@@ -78,6 +81,7 @@ public class HandTracking : MonoBehaviour
                         leftHand.transform.position.x, 
                         leftHand.transform.position.y-0.15f, 
                         leftHand.transform.position.z);
+                    targetPrefab.transform.rotation = centerEyeAnchor.transform.rotation;
                     
             }
             tapTime = Time.time;
