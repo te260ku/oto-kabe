@@ -29,7 +29,7 @@ public class Block : MonoBehaviour
                 break;
         }
 
-        if (timer > 3f) {
+        if (timer > 0.1f) {
             DeactivateBlock();
             timer = 0.0f;
         }

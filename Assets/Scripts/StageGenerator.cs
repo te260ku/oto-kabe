@@ -31,6 +31,7 @@ public class StageGenerator : MonoBehaviour
     // 効果音
     private AudioSource audioSource;
     [SerializeField] private AudioClip pushButtonAudio;
+    [SerializeField] private AudioClip bgm1;
     
     void Start()
     {
@@ -64,6 +65,8 @@ public class StageGenerator : MonoBehaviour
         } else if (Input.GetKeyDown(KeyCode.W)) {
             SetAnchor(middleSphere);
         } else if (Input.GetKeyDown(KeyCode.E)) {
+            audioSource.clip = bgm1;
+            audioSource.Play();
             CreateStage();
         } else if (Input.GetKeyDown(KeyCode.T)) {
             

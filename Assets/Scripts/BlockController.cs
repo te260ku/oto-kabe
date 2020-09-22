@@ -31,19 +31,14 @@ public class BlockController : MonoBehaviour
     private float currentTime = 0f;
     private string dataPath;
 
-    [System.Serializable]
-    public struct NotesData
-    {
-        // "LPB":4,"num":586,"block":0,"type":1,"notes":[]
-        public int LPB;
-        public int num;
-        public int block;
+    public struct NotesData {
+        public float startTime;
         public int type;
-        public int notes;
-        public void Dump() {
-        Debug.Log("time : " + type);
     }
-    }
+
+    public NotesData[] notesData;
+    private int notesCount;
+    
 
     
     void Start()
@@ -57,6 +52,7 @@ public class BlockController : MonoBehaviour
             count++;
         }
 
+        notesData = new NotesData[100];
 
         LoadNotes();
 
@@ -71,9 +67,11 @@ public class BlockController : MonoBehaviour
         }  
 
         currentTime += Time.deltaTime;
-        if(currentTime > span){
+        
+        if(currentTime > notesData[notesCount].startTime){
             SetNextBlock();
-            currentTime = 0f;
+            // currentTime = 0f;
+            notesCount++;
         }
         
     }
@@ -94,7 +92,12 @@ public class BlockController : MonoBehaviour
 
 
         InputJson inputJson = JsonUtility.FromJson<InputJson>(json);
-        Debug.Log(inputJson.notes[0].num);  // 111
-        Debug.Log(inputJson.notes[1].num);  // 444
+        
+
+        for (int i=0; i<inputJson.notes.Length; i++) {
+            notesData[i].startTime = inputJson.notes[i].num*3f/32f;
+        }
+
+
     }
 }
