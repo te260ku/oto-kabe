@@ -3,29 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-    [System.Serializable]
-    public class InputJson
-    {
-        public string name;
-        public int maxBlock;
-        public int BPM;
-        public int offset;
-        public Note[] notes;
-    }
+[System.Serializable]
+public class InputJson
+{
+    public string name;
+    public int maxBlock;
+    public int BPM;
+    public int offset;
+    public Note[] notes;
+}
 
-    [System.Serializable]
-    public class Note
-    {
-        public int LPB;
-        public int num;
-        public int block;
-        public int type;
-        public int notes;
-    }
+[System.Serializable]
+public class Note
+{
+    public int LPB;
+    public int num;
+    public int block;
+    public int type;
+    public int notes;
+}
 
 public class BlockController : MonoBehaviour
 {
-    // private GameObject[,] blocks = new GameObject[3,3];
     private Block[] blocks = new Block[9];
             public float span = 3f;
     private float currentTime = 0f;
@@ -50,8 +49,6 @@ public class BlockController : MonoBehaviour
         int count = 0;
         foreach (Transform child in this.transform){
             blocks[count] = child.gameObject.GetComponent<Block>();
-            // blocks[count] = blockObjects[count].GetComponent<Block>();
-            
             count++;
         }
 
@@ -59,13 +56,8 @@ public class BlockController : MonoBehaviour
             blockNums.Add(i);
         }
  
-        
-
         notesData = new NotesData[100];
-
         LoadNotes();
-
-        
     }
 
     
@@ -85,10 +77,8 @@ public class BlockController : MonoBehaviour
     }
 
     private void SetNextBlock() {
-        
-        
+
         nextBlockNum = Random.Range(0, 9);
-        
         previousBlockNum = nextBlockNum;
 
         if (!(blockNums.Count > 0)) {
@@ -100,9 +90,7 @@ public class BlockController : MonoBehaviour
         if (blockNums.Count > 0) {
  
             int index = Random.Range(0, blockNums.Count);
- 
             nextBlockNum = blockNums[index];
-             
             blockNums.RemoveAt(index);
         } 
 
@@ -120,12 +108,13 @@ public class BlockController : MonoBehaviour
 
 
         InputJson inputJson = JsonUtility.FromJson<InputJson>(json);
+
+        float barToTime = 60f/(inputJson.BPM*inputJson.notes[0].LPB);
         
 
         for (int i=0; i<inputJson.notes.Length; i++) {
-            notesData[i].startTime = inputJson.notes[i].num*3f/32f;
+
+            notesData[i].startTime = inputJson.notes[i].num*barToTime;
         }
-
-
     }
 }

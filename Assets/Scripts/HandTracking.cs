@@ -19,9 +19,6 @@ public class HandTracking : MonoBehaviour
     [SerializeField] private Text handPoseText;
     [SerializeField] private Text thumbText;    
     
-
-    
-    
     private bool isLeftRingPinching;
     private bool releasedIndex;
     private bool releasedMiddle;
@@ -87,18 +84,12 @@ public class HandTracking : MonoBehaviour
             tapTime = Time.time;
             releasedMiddle = false;
             }
-
-            
-            
-                        
-            
+  
         } else {
             releasedMiddle = true;
         }
 
         
-        
-
         if (isLeftRingPinching) {
             if (!enabledhandMenu) {
                 audioSource.PlayOneShot(showhandMenuAudio);
@@ -154,8 +145,4 @@ public class HandTracking : MonoBehaviour
         handMenu.SetActive(false);        
     }
 
-
-    
-
-    
 }

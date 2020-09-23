@@ -22,9 +22,7 @@ public class MainController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S)) {
-
-        }
+        
     }
 
     public void AddScore() {
