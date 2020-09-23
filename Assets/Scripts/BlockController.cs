@@ -38,6 +38,9 @@ public class BlockController : MonoBehaviour
 
     public NotesData[] notesData;
     private int notesCount;
+    private int previousBlockNum = -1;
+    private int nextBlockNum;
+    private List<int> blockNums = new List<int>();
     
 
     
@@ -51,6 +54,12 @@ public class BlockController : MonoBehaviour
             
             count++;
         }
+
+        for (int i = 0; i < 9; i++) {
+            blockNums.Add(i);
+        }
+ 
+        
 
         notesData = new NotesData[100];
 
@@ -70,14 +79,33 @@ public class BlockController : MonoBehaviour
         
         if(currentTime > notesData[notesCount].startTime){
             SetNextBlock();
-            // currentTime = 0f;
             notesCount++;
         }
         
     }
 
     private void SetNextBlock() {
-        int nextBlockNum = Random.Range(0, 9);
+        
+        
+        nextBlockNum = Random.Range(0, 9);
+        
+        previousBlockNum = nextBlockNum;
+
+        if (!(blockNums.Count > 0)) {
+            for (int i = 0; i < 9; i++) {
+            blockNums.Add(i);
+            }
+        }
+
+        if (blockNums.Count > 0) {
+ 
+            int index = Random.Range(0, blockNums.Count);
+ 
+            nextBlockNum = blockNums[index];
+             
+            blockNums.RemoveAt(index);
+        } 
+
         Block target = blocks[nextBlockNum];
         target.ActivateBlock();
         

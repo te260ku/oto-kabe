@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MiddleFollower : MonoBehaviour
 {
     [SerializeField] private GameObject rightHand;
     private OVRSkeleton rightSkelton;
+    public MainController mainController;
+
 
     // 状態管理
     public bool isTouchingPlane;
@@ -20,6 +23,16 @@ public class MiddleFollower : MonoBehaviour
         rightSkelton = rightHand.GetComponent<OVRSkeleton>();
     }
 
+    private void FixedUpdate() {
+        #if UNITY_EDITOR
+        #else
+            Vector3 indexTipPos = rightSkelton.Bones[(int)OVRSkeleton.BoneId.Hand_Middle1].Transform.position;
+            Quaternion indexTipRot = rightSkelton.Bones[(int)OVRSkeleton.BoneId.Hand_Middle1].Transform.rotation;
+            this.transform.position = indexTipPos;
+            this.transform.rotation = indexTipRot;
+        #endif  
+    }
+
 
     void Update()
     {
@@ -32,33 +45,30 @@ public class MiddleFollower : MonoBehaviour
             {
                 if(hit.collider.gameObject.CompareTag("Target"))
                 {
-                    hit.collider.gameObject.GetComponent<Renderer>().material.color = Color.white;
-                    audioSource.PlayOneShot(hitBlockAudio);
+                    GameObject target = hit.collider.gameObject;
+                    Block targetBlock = target.GetComponent<Block>();
+                    if (targetBlock.state == Block.STATE.ACTIVE) {
+                        targetBlock.DeactivateBlock();
+                        mainController.AddScore();
+                        audioSource.PlayOneShot(hitBlockAudio);
+                    }
                 }
             }
         }
     }
 
-    private void FixedUpdate() {
-        #if UNITY_EDITOR
-        #else
-            Vector3 indexTipPos = rightSkelton.Bones[(int)OVRSkeleton.BoneId.Hand_Middle1].Transform.position;
-            Quaternion indexTipRot = rightSkelton.Bones[(int)OVRSkeleton.BoneId.Hand_Middle1].Transform.rotation;
-            this.transform.position = indexTipPos;
-            this.transform.rotation = indexTipRot;
-        #endif
-
-        
-        
-    }
+    
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("collide");
         GameObject target = other.gameObject;
         if (target.tag == "Target") {
-            target.GetComponent<Renderer>().material.color = Color.blue;
-            audioSource.PlayOneShot(hitBlockAudio);
+            Block targetBlock = target.GetComponent<Block>();
+            if (targetBlock.state == Block.STATE.ACTIVE) {
+                targetBlock.DeactivateBlock();
+                audioSource.PlayOneShot(hitBlockAudio);
+                mainController.AddScore();
+            }
         }
 
         if (target.tag == "StagePlane") {
@@ -70,7 +80,7 @@ public class MiddleFollower : MonoBehaviour
     {
         GameObject target = other.gameObject;
         if (target.tag == "Target") {
-            target.GetComponent<Renderer>().material.color = Color.white;
+            // target.GetComponent<Renderer>().material.color = Color.white;
         }
 
         if (target.tag == "StagePlane") {
