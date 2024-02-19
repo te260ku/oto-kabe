@@ -20,19 +20,19 @@ public class Block : MonoBehaviour
     
     void Update()
     {
-        switch (state)
-        {
-            case STATE.ACTIVE:
-                timer += Time.deltaTime;
-                break;
-            default:
-                break;
-        }
+        // switch (state)
+        // {
+        //     case STATE.ACTIVE:
+        //         timer += Time.deltaTime;
+        //         break;
+        //     default:
+        //         break;
+        // }
 
-        if (timer > 0.5f) {
-            DeactivateBlock();
-            timer = 0.0f;
-        }
+        // if (timer > 0.5f) {
+        //     DeactivateBlock();
+        //     timer = 0.0f;
+        // }
     }
 
 
@@ -43,6 +43,13 @@ public class Block : MonoBehaviour
     public void DeactivateBlock() {
         state = STATE.IDLE;
         GetComponent<Renderer>().material.color = Color.white;
+    }
+
+  
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(1);
+        Destroy(gameObject);
     }
 
     

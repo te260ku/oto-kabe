@@ -58,17 +58,17 @@ public class HandFollower : MonoBehaviour
 
     public void ButtonPush(int buttonNum) {
 
-        if (buttonNum == 1) {
-            stageGenerator.CreatePlane(gameObject);
-        } else {
-            if (isTouchingPlane) {
-                if (buttonNum == 2) {
+        // if (buttonNum == 1) {
+        //     stageGenerator.CreatePlane(gameObject);
+        // } else {
+        //     if (isTouchingPlane) {
+        //         if (buttonNum == 2) {
 
-                } else if (buttonNum == 3) {
+        //         } else if (buttonNum == 3) {
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
         
     }
 }
