@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
+using TMPro;
 
 public class Block : MonoBehaviour
 {
@@ -12,9 +14,25 @@ public class Block : MonoBehaviour
     }
     public STATE state;
     private float timer = 0.0f;
+    int blockID;
+    public int BlockID
+    {
+        get { return blockID; }
+        set { blockID = value; }
+    }
+    [SerializeField] TextMeshProUGUI idText;
+
+
+
     void Start()
     {
+        
+    }
+
+    public void Initialize(int id) {
         state = STATE.IDLE;
+        BlockID = id;
+        idText.text = blockID.ToString();
     }
 
     
@@ -37,10 +55,12 @@ public class Block : MonoBehaviour
 
 
     public void ActivateBlock() {
+        if (state == STATE.ACTIVE) return;
         state = STATE.ACTIVE;
         GetComponent<Renderer>().material.color = Color.blue;
     }
     public void DeactivateBlock() {
+        if (state == STATE.IDLE) return;
         state = STATE.IDLE;
         GetComponent<Renderer>().material.color = Color.white;
     }
@@ -48,9 +68,15 @@ public class Block : MonoBehaviour
   
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(1);
-        Destroy(gameObject);
+        OnHitHand();
     }
+
+    public void OnHitHand() 
+    {
+        DeactivateBlock();
+    }
+
+    
 
     
 }
