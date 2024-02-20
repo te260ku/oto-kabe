@@ -7,11 +7,9 @@ using TMPro;
 public class Block : MonoBehaviour
 {
     public enum STATE {
-        NONE = -1, 
-        IDLE = 0, 
+        IDLE, 
         ACTIVE, 
         READY, 
-        NUM, 
     }
     public STATE state;
     private float timer = 0.0f;
@@ -45,7 +43,6 @@ public class Block : MonoBehaviour
         switch (state)
         {
             case STATE.ACTIVE:
-                // timer += Time.deltaTime;
                 break;
             case STATE.READY:
                 blockRenderer.material.color = Color.Lerp(blockRenderer.material.color, readyColor, readyEffectDuration * Time.deltaTime);
@@ -53,11 +50,6 @@ public class Block : MonoBehaviour
             default:
                 break;
         }
-
-        // if (timer > 0.5f) {
-        //     DeactivateBlock();
-        //     timer = 0.0f;
-        // }
         
     }
 
@@ -75,13 +67,12 @@ public class Block : MonoBehaviour
     public void ReadyBlock(float duration) {
         if (state == STATE.READY) return;
         state = STATE.READY;
-        // GetComponent<Renderer>().material.color = readyColor;
-        readyEffectDuration = duration;
-
-        
+        PlayReadyBlockEffect(duration);
     }
 
-
+    void PlayReadyBlockEffect(float duration) {
+        readyEffectDuration = duration;
+    }
 
   
     void OnTriggerEnter(Collider other)
