@@ -10,6 +10,7 @@ public class Block : MonoBehaviour
         NONE = -1, 
         IDLE = 0, 
         ACTIVE, 
+        READY, 
         NUM, 
     }
     public STATE state;
@@ -21,12 +22,15 @@ public class Block : MonoBehaviour
         set { blockID = value; }
     }
     [SerializeField] TextMeshProUGUI idText;
+    [SerializeField] Color readyColor;
+    float readyEffectDuration;
+    Renderer blockRenderer;
 
 
 
     void Start()
     {
-        
+        blockRenderer = GetComponent<Renderer>();
     }
 
     public void Initialize(int id) {
@@ -38,32 +42,46 @@ public class Block : MonoBehaviour
     
     void Update()
     {
-        // switch (state)
-        // {
-        //     case STATE.ACTIVE:
-        //         timer += Time.deltaTime;
-        //         break;
-        //     default:
-        //         break;
-        // }
+        switch (state)
+        {
+            case STATE.ACTIVE:
+                // timer += Time.deltaTime;
+                break;
+            case STATE.READY:
+                blockRenderer.material.color = Color.Lerp(blockRenderer.material.color, readyColor, readyEffectDuration * Time.deltaTime);
+                break;
+            default:
+                break;
+        }
 
         // if (timer > 0.5f) {
         //     DeactivateBlock();
         //     timer = 0.0f;
         // }
+        
     }
 
 
     public void ActivateBlock() {
         if (state == STATE.ACTIVE) return;
         state = STATE.ACTIVE;
-        GetComponent<Renderer>().material.color = Color.blue;
+        GetComponent<Renderer>().material.color = readyColor;
     }
     public void DeactivateBlock() {
         if (state == STATE.IDLE) return;
         state = STATE.IDLE;
         GetComponent<Renderer>().material.color = Color.white;
     }
+    public void ReadyBlock(float duration) {
+        if (state == STATE.READY) return;
+        state = STATE.READY;
+        // GetComponent<Renderer>().material.color = readyColor;
+        readyEffectDuration = duration;
+
+        
+    }
+
+
 
   
     void OnTriggerEnter(Collider other)

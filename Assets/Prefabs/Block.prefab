@@ -349,3 +349,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   idText: {fileID: 2304602625677702134}
+  readyColor: {r: 0.23113209, g: 0.3526979, b: 1, a: 1}

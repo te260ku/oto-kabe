@@ -35,13 +35,15 @@ public class BlockController : MonoBehaviour
 
     public struct NotesData {
         public float startTime;
+        public int blockID;
         public int type;
     }
 
     public NotesData[] notesData;
     private int currentBlockNum;
-    private int previousActiveBlockNum = 0;
-    private int currentActiveBlockNum;
+    private int previousActiveBlockID;
+    private int currentActiveBlockID;
+    private int nextActiveBlockNum;
     private List<int> blockNums = new List<int>();
 
     ObjectPool<GameObject> pool;
@@ -67,6 +69,7 @@ public class BlockController : MonoBehaviour
     [SerializeField] BoneFollower middleTipBone;
     // [SerializeField]
     [SerializeField] GameObject debugAxis;
+
     
 
     
@@ -83,14 +86,16 @@ public class BlockController : MonoBehaviour
         //     blockNums.Add(i);
         // }
  
-        notesData = new NotesData[100];
-        LoadNotes();
+        
 
         // InitializeBlocks();
 
         GenerateGrid();
 
         totalGridCount = gridHeight * gridWidth;
+
+        notesData = new NotesData[100];
+        LoadNotes();
     }
 
 
@@ -126,12 +131,14 @@ public class BlockController : MonoBehaviour
                 blockCount ++;
             }
         }
+
+        
     }
 
     public void OnHit(int id) {
         if (blocks[id].state == Block.STATE.IDLE) return;
         blocks[id].OnHitHand();
-        if (id == currentActiveBlockNum) {
+        if (id == currentActiveBlockID) {
             audiosourceSE.PlayOneShot(onHitSound);
             score ++;
             scoreText.text = score.ToString();
@@ -277,19 +284,30 @@ public class BlockController : MonoBehaviour
 
     private void SetNextBlock() {
 
-        blocks[previousActiveBlockNum].DeactivateBlock();
+        // blocks[previousActiveBlockID].DeactivateBlock();
+        foreach (var block in blocks)
+        {
+            block.DeactivateBlock();
+        }
 
-        currentActiveBlockNum = Random.Range(0, totalGridCount);
-        previousActiveBlockNum = currentActiveBlockNum;
+        if (currentBlockNum < notesData.Length-1) {
+            float duration = notesData[currentBlockNum+1].startTime - notesData[currentBlockNum].startTime;
+            blocks[notesData[currentBlockNum+1].blockID].ReadyBlock(duration);
+        }
+
+        currentActiveBlockID = notesData[currentBlockNum].blockID;
+        previousActiveBlockID = currentActiveBlockID;
 
         
         
-        blocks[currentActiveBlockNum].ActivateBlock();
+        blocks[currentActiveBlockID].ActivateBlock();
         
 
     }
 
     private void LoadNotes() {
+
+        Debug.Log("aa");
 
         var info = new FileInfo(Application.dataPath + "/Notes/" + bgmFileName + ".json");
         var reader = new StreamReader (info.OpenRead ());
@@ -299,12 +317,38 @@ public class BlockController : MonoBehaviour
         InputJson inputJson = JsonUtility.FromJson<InputJson>(json);
 
         float barToTime = 60f/(inputJson.BPM*inputJson.notes[0].LPB);
+
+
+
+
+        List<int> nonConsecutiveList = new List<int>();
+        int previousNumber = -1; // 前の数字を保持する変数を初期化
         
 
         for (int i=0; i<inputJson.notes.Length; i++) {
 
             notesData[i].startTime = inputJson.notes[i].num*barToTime;
+            
+
+
+            int randomNumber = Random.Range(0, totalGridCount); // 0から9までのランダムな整数を生成
+
+            // 前の数字と異なる場合のみリストに追加
+            if (randomNumber != previousNumber)
+            {
+                nonConsecutiveList.Add(randomNumber);
+                previousNumber = randomNumber; // 前の数字を更新
+            }
+            else
+            {
+                // 同じ数字が生成された場合、もう一度乱数を生成する
+                i--;
+            }
+
+            notesData[i].blockID = randomNumber;
+            Debug.Log(randomNumber);
         }
+
     }
 
 
