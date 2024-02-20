@@ -74,7 +74,8 @@ public class BlockController : MonoBehaviour
 
     void GenerateGrid() 
     {
-        var cubeSize = blockPrefab.transform.localScale;
+        var cubeSize = blockPrefab.GetComponent<Block>().BodyObjScale;
+        Debug.Log(cubeSize);
         // グリッドの中心からのオフセットを計算
         Vector3 offset = new Vector3(
             (gridWidth - 1) * cubeSize.x / 2f,
@@ -93,7 +94,7 @@ public class BlockController : MonoBehaviour
 
                 // Cubeを作成して配置
                 GameObject blockObj = Instantiate(blockPrefab, spawnPosition, Quaternion.identity);
-                blockObj.transform.localScale = cubeSize;
+                // blockObj.transform.localScale = cubeSize;
                 blockObj.transform.SetParent(gridParentObj.transform);
                 var b = blockObj.GetComponent<Block>();
                 b.Initialize(blockCount);
@@ -108,7 +109,7 @@ public class BlockController : MonoBehaviour
     }
 
     public void OnHit(int id) {
-        if (blocks[id].state == Block.STATE.IDLE) return;
+        if (blocks[id].state != Block.STATE.ACTIVE) return;
         blocks[id].OnHitHand();
         if (id == currentActiveBlockID) {
             audiosourceSE.PlayOneShot(onHitSound);

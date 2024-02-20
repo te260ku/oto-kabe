@@ -23,12 +23,18 @@ public class Block : MonoBehaviour
     [SerializeField] Color readyColor;
     float readyEffectDuration;
     Renderer blockRenderer;
+    [SerializeField] ParticleSystem onHitHandParticle;
+    [SerializeField] GameObject bodyObj;
+    public Vector3 BodyObjScale
+    {
+        get { return bodyObj.transform.localScale; }
+    }
 
 
 
     void Start()
     {
-        blockRenderer = GetComponent<Renderer>();
+        blockRenderer = bodyObj.GetComponent<Renderer>();
     }
 
     public void Initialize(int id) {
@@ -57,12 +63,12 @@ public class Block : MonoBehaviour
     public void ActivateBlock() {
         if (state == STATE.ACTIVE) return;
         state = STATE.ACTIVE;
-        GetComponent<Renderer>().material.color = readyColor;
+        blockRenderer.material.color = readyColor;
     }
     public void DeactivateBlock() {
         if (state == STATE.IDLE) return;
         state = STATE.IDLE;
-        GetComponent<Renderer>().material.color = Color.white;
+        blockRenderer.material.color = Color.white;
     }
     public void ReadyBlock(float duration) {
         if (state == STATE.READY) return;
@@ -83,6 +89,7 @@ public class Block : MonoBehaviour
     public void OnHitHand() 
     {
         DeactivateBlock();
+        onHitHandParticle.Play();
     }
 
     
