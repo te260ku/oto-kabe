@@ -60,6 +60,13 @@ public class BlockController : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] AudioSource audiosourceSE;
     [SerializeField] AudioClip onHitSound;
+    [SerializeField] string bgmFileName;
+    // [SerializeField] GameObject gridCenterMarkerObj;
+    [SerializeField] GameObject gridCornerMarkerObj;
+    [SerializeField] BoneFollower middleBaseBone;
+    [SerializeField] BoneFollower middleTipBone;
+    // [SerializeField]
+    [SerializeField] GameObject debugAxis;
     
 
     
@@ -131,12 +138,115 @@ public class BlockController : MonoBehaviour
         }
     }
 
+    void AdjustGridPosition() {
+        gridParentObj.transform.position = middleBaseBone.gameObject.transform.position;
+    }
+
+    void AdjustGridScale() {
+        // var centerToCornerDistance = Vector3.Distance(middleBaseBone.transform.position, gridCornerMarkerObj.transform.position);
+        // var originalDistance = 0.423f;
+        // var scaleMultiply = centerToCornerDistance / originalDistance;
+        // gridParentObj.transform.localScale = new Vector3(
+        //     gridParentObj.transform.localScale.x * scaleMultiply, 
+        //     gridParentObj.transform.localScale.y, 
+        //     gridParentObj.transform.localScale.z * scaleMultiply
+        // );
+
+        // // Vector3 direction = (gridCornerMarkerObj.transform.position - middleBaseBone.transform.position).normalized;
+        // // gridParentObj.transform.rotation = Quaternion.FromToRotation(Vector3.up, direction);
+
+        // cubeのサイズを設定する
+        // float distance = Vector3.Distance(middleBaseBone.transform.position, gridCornerMarkerObj.transform.position);
+        // gridParentObj.transform.localScale = new Vector3(distance / 2f * 5f, gridParentObj.transform.localScale.y, distance / 2f * 5f);
+    }
+
+    void CreatePlane() {
+        
+        gridParentObj.transform.position = middleBaseBone.gameObject.transform.position;
+
+
+        
+        // 2つの球の位置を取得
+        Vector3 sphere1Pos = middleBaseBone.gameObject.transform.position;
+        Vector3 sphere2Pos = middleTipBone.gameObject.transform.position;
+
+        // 2つの球の中点を計算
+        Vector3 centerPoint = (sphere1Pos + sphere2Pos) / 2f;
+
+        // 平面の法線を計算
+        // Vector3 planeNormal = (sphere2Pos - sphere1Pos).normalized;
+        Vector3 planeNormal = Vector3.Cross((sphere2Pos - sphere1Pos).normalized, gridParentObj.transform.forward).normalized;
+        // Vector3 planeNormal = (sphere2Pos - sphere1Pos).normalized;
+
+        Vector3 zAxis = Vector3.Cross(planeNormal, Vector3.forward);
+        Vector3 xAxis = Vector3.Cross(planeNormal, zAxis).normalized;
+
+        // 2つの球の方向を計算
+        Vector3 direction = (sphere2Pos - sphere1Pos).normalized;
+
+        // 平面の法線と2つの球の方向の角度を計算
+        float angle = Vector3.SignedAngle(planeNormal, direction, Vector3.forward);
+
+
+
+
+
+        
+
+        
+        Quaternion result = Quaternion.LookRotation(planeNormal, gridParentObj.transform.up);
+
+        // 平面の位置を設定
+        // gridParentObj.transform.position = centerPoint;
+
+        // 平面の向きを設定
+        // gridParentObj.transform.rotation = Quaternion.LookRotation(planeNormal, Vector3.forward);
+        // gridParentObj.transform.rotation = Quaternion.AngleAxis(angle, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
+
+        result = Quaternion.FromToRotation(gridParentObj.transform.up, planeNormal);
+        result = middleBaseBone.transform.rotation;
+
+        gridParentObj.transform.rotation = result;
+        
+        // gridParentObj.transform.rotation = Quaternion.FromToRotation(gridParentObj.transform.up, planeNormal);
+
+        // // 平面のサイズを設定（2つの球の距離に応じて調整）
+        // float planeSize = Vector3.Distance(sphere1Pos, sphere2Pos);
+        // gridParentObj.transform.localScale = new Vector3(planeSize, 0.1f, planeSize);
+
+
+        Vector3 dir = middleTipBone.transform.position - middleBaseBone.transform.position;
+
+        // 方向ベクトルをワールド座標系に変換
+        result = Quaternion.Euler(middleBaseBone.transform.TransformDirection(dir));
+
+
+        debugAxis.transform.position = middleBaseBone.gameObject.transform.position;
+        debugAxis.transform.rotation = result;
+
+
+        
+    }
+
     
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R)) {
             StartGame();
-        }  
+        }
+        if (Input.GetKeyDown(KeyCode.T)) {
+            AdjustGridPosition();
+        }
+        if (Input.GetKeyDown(KeyCode.Y)) {
+            CreatePlane();
+        }
+        if (Input.GetKeyDown(KeyCode.U)) {
+            
+            AdjustGridScale();
+        }
+
+        
+        // CreatePlane();
 
         // デバッグ用
         for (int i = 0; i <= 9; i++)
@@ -181,7 +291,7 @@ public class BlockController : MonoBehaviour
 
     private void LoadNotes() {
 
-        var info = new FileInfo(Application.dataPath + "/" + "bgm1.json");
+        var info = new FileInfo(Application.dataPath + "/Notes/" + bgmFileName + ".json");
         var reader = new StreamReader (info.OpenRead ());
         var json = reader.ReadToEnd ();
 
