@@ -40,6 +40,7 @@ public class BlockController : MonoBehaviour
     [SerializeField] BoneFollower ringTipBone;
     [SerializeField] GameObject handRObj;
     [SerializeField] GameObject debugAxis;
+    [SerializeField] float notesStartOffset;
     public class Note {
         public float startTime;
         public int blockID;
@@ -215,7 +216,7 @@ public class BlockController : MonoBehaviour
         for (int i=0; i<notesCount; i++) {
             Note note = new Note
             {
-                startTime = inputJson.notes[i].num * barToTime, 
+                startTime = inputJson.notes[i].num * barToTime + notesStartOffset, 
                 blockID = activeBlockIDs[i]
             };
             notes.Add(note);

@@ -846,7 +846,7 @@ MonoBehaviour:
   gridWidth: 3
   gridHeight: 3
   audiosourceSE: {fileID: 1695595929}
-  onHitSound: {fileID: 8300000, guid: c35dca7a6f48c4406bc4f356a5736fcd, type: 3}
+  onHitSound: {fileID: 8300000, guid: 2807b4cfb53340f44bd712b71cf87d44, type: 3}
   jsonFileName: bgm_4
   gridCornerMarkerObj: {fileID: 1738652545}
   middleBaseBone: {fileID: 2106962293}
@@ -855,6 +855,7 @@ MonoBehaviour:
   ringTipBone: {fileID: 1896826318}
   handRObj: {fileID: 106600839}
   debugAxis: {fileID: 466319456}
+  notesStartOffset: -0.05
 --- !u!1 &177293211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1179,7 +1180,7 @@ GameObject:
   - component: {fileID: 217156829}
   - component: {fileID: 217156833}
   m_Layer: 0
-  m_Name: Sphere_1
+  m_Name: IndexTipBone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1260,8 +1261,8 @@ Transform:
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_Father: {fileID: 1468636256}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &217156833
 MonoBehaviour:
@@ -6475,11 +6476,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1468197721}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1, y: 0, z: 2}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1553209630}
+  m_Father: {fileID: 1468636256}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &1468197723
@@ -6559,6 +6560,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetBone: 21
   targetHandSkeleton: {fileID: 106600841}
+--- !u!1 &1468636255
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1468636256}
+  m_Layer: 0
+  m_Name: Bone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1468636256
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1468636255}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2106962292}
+  - {fileID: 1468197722}
+  - {fileID: 217156832}
+  - {fileID: 1896826317}
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1499237788
 GameObject:
   m_ObjectHideFlags: 0
@@ -6936,39 +6972,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d952c175ec3c6554199fd744548ce50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1553209629
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1553209630}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1553209630
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1553209629}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2106962292}
-  - {fileID: 1468197722}
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1559529505 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 83685398960850492, guid: fbfc588a949bb1a42b20e5bddc4cf8cf,
@@ -6982,6 +6985,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1057063983}
     m_Modifications:
+    - target: {fileID: 5488612367929597328, guid: 69fd815dc7aa2c54fbc7918147b6507e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5488612367929597328, guid: 69fd815dc7aa2c54fbc7918147b6507e,
         type: 3}
       propertyPath: blockController
@@ -8485,7 +8493,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821028165}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b492b583b4b2bac42b51411eda095b87, type: 3}
   m_Name: 
@@ -8990,7 +8998,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1855014362}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b492b583b4b2bac42b51411eda095b87, type: 3}
   m_Name: 
@@ -9190,7 +9198,7 @@ GameObject:
   - component: {fileID: 1896826314}
   - component: {fileID: 1896826318}
   m_Layer: 0
-  m_Name: Sphere_3
+  m_Name: RingTipBone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9271,8 +9279,8 @@ Transform:
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 20
+  m_Father: {fileID: 1468636256}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1896826318
 MonoBehaviour:
@@ -10191,11 +10199,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2106962288}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1553209630}
+  m_Father: {fileID: 1468636256}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2106962293
@@ -12771,6 +12779,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 106600840}
     m_Modifications:
+    - target: {fileID: 5488612367929597328, guid: 69fd815dc7aa2c54fbc7918147b6507e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5488612367929597328, guid: 69fd815dc7aa2c54fbc7918147b6507e,
         type: 3}
       propertyPath: blockController
