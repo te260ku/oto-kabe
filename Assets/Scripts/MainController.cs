@@ -2,17 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainController : MonoBehaviour
 {
-    public enum STEP {
-        NONE = -1, 
-        WAIT,
+    [SerializeField] MusicController musicController;
+    [SerializeField] TextMeshProUGUI scoreText;
+    public enum GAME_STATE {
+        IDLE,
         PLAY,  
         NUM, 
     }
-    public int score;
-    public Text scoreText;
+    
+    GAME_STATE gameState = GAME_STATE.IDLE;
+    public GAME_STATE GameState {
+        get { return gameState; }
+    }
+    int score;
 
     void Start()
     {
@@ -22,11 +28,19 @@ public class MainController : MonoBehaviour
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.R)) {
+            StartGame();
+        }
+    }
+
+    void StartGame() {
+        musicController.StartGame();
+        gameState = GAME_STATE.PLAY;
     }
 
     public void AddScore() {
-        score++;
-        scoreText.text = "SCORE: " + score.ToString();
+        score ++;
+        scoreText.text = score.ToString();
     }
+
 }

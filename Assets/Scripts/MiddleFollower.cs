@@ -49,7 +49,7 @@ public class MiddleFollower : MonoBehaviour
                     Block targetBlock = target.GetComponent<Block>();
                     if (targetBlock.state == Block.STATE.ACTIVE) {
                         targetBlock.DeactivateBlock();
-                        mainController.AddScore();
+                        // mainController.AddScore();
                         audioSource.PlayOneShot(hitBlockAudio);
                     }
                 }
@@ -67,7 +67,7 @@ public class MiddleFollower : MonoBehaviour
             if (targetBlock.state == Block.STATE.ACTIVE) {
                 targetBlock.DeactivateBlock();
                 audioSource.PlayOneShot(hitBlockAudio);
-                mainController.AddScore();
+                // mainController.AddScore();
             }
         }
 

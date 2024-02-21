@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using UnityEngine.Pool;
-using TMPro;
-using UnityEditorInternal;
 
 [System.Serializable]
 public class InputJson
@@ -13,11 +10,11 @@ public class InputJson
     public int maxBlock;
     public int BPM;
     public int offset;
-    public Note[] notes;
+    public NotesParam[] notes;
 }
 
 [System.Serializable]
-public class Note
+public class NotesParam
 {
     public int LPB;
     public int num;
@@ -28,45 +25,35 @@ public class Note
 
 public class BlockController : MonoBehaviour
 {
-    public float span = 3f;
-    private float elapsedTime = 0f;
-
-    public class NotesData {
+    [SerializeField] MainController mainController;
+    [SerializeField] GameObject blockPrefab;
+    [SerializeField] GameObject gridParentObj;
+    [SerializeField] int gridWidth = 3;
+    [SerializeField] int gridHeight = 3;
+    [SerializeField] AudioSource audiosourceSE;
+    [SerializeField] AudioClip onHitSound;
+    [SerializeField] string jsonFileName;
+    [SerializeField] GameObject gridCornerMarkerObj;
+    [SerializeField] BoneFollower middleBaseBone;
+    [SerializeField] BoneFollower middleTipBone;
+    [SerializeField] GameObject handRObj;
+    [SerializeField] GameObject debugAxis;
+    public class Note {
         public float startTime;
         public int blockID;
         public int type;
     }
-
-    List<NotesData> notesData = new List<NotesData>();
-    private int currentNoteNum;
-    private int previousActiveBlockID;
-    private int currentActiveBlockID;
-    [SerializeField] GameObject blockPrefab;
+    List<Note> notes = new List<Note>();
     List<Block> blocks = new List<Block>();
-    [SerializeField] GameObject gridParentObj;
-    [SerializeField] int gridWidth = 3;
-    [SerializeField] int gridHeight = 3;
-    [SerializeField] float spacing = 1f;
-    [SerializeField] AudioSource audioSourceMusic;
-    [SerializeField] AudioClip bgm;
-    [SerializeField] float musicVolume = 0.02f;
+    float elapsedTime;
+    int currentNoteNum;
+    int currentActiveBlockID;
     int totalGridCount;
-    bool isPlaying;
-    int score;
-    [SerializeField] TextMeshProUGUI scoreText;
-    [SerializeField] AudioSource audiosourceSE;
-    [SerializeField] AudioClip onHitSound;
-    [SerializeField] string bgmFileName;
-    [SerializeField] GameObject gridCornerMarkerObj;
-    [SerializeField] BoneFollower middleBaseBone;
-    [SerializeField] BoneFollower middleTipBone;
-    [SerializeField] GameObject debugAxis;
-
+    
     
     void Start()
     {
         totalGridCount = gridHeight * gridWidth;
-
         GenerateGrid();
         LoadNotes();
     }
@@ -75,37 +62,33 @@ public class BlockController : MonoBehaviour
     void GenerateGrid() 
     {
         var blockScale = blockPrefab.GetComponent<Block>().BodyObjScale;
-        Debug.Log(blockScale);
+
         // グリッドの中心からのオフセットを計算
         Vector3 offset = new Vector3(
             (gridWidth - 1) * blockScale.x / 2f,
             0f,
             (gridHeight - 1) * blockScale.z / 2f
         );
-        int blockCount = 0;
-
+        
         // グリッドを作成
+        int blockCount = 0;
         for (int x = 0; x < gridWidth; x++)
         {
             for (int z = 0; z < gridHeight; z++)
             {
-                // Cubeの位置を計算
+                // 座標を指定してブロックを作成
                 Vector3 spawnPosition = new Vector3(x * blockScale.x, 0f, z * blockScale.z) - offset;
-
-                // Cubeを作成して配置
                 GameObject blockObj = Instantiate(blockPrefab, spawnPosition, Quaternion.identity);
-                // blockObj.transform.localScale = cubeSize;
                 blockObj.transform.SetParent(gridParentObj.transform);
+
+                // ブロックの初期設定
                 var b = blockObj.GetComponent<Block>();
                 b.Initialize(blockCount);
-                
                 blocks.Add(b);
 
                 blockCount ++;
             }
         }
-
-        
     }
 
     
@@ -113,8 +96,8 @@ public class BlockController : MonoBehaviour
     void AdjustGridPosition() {
         var blockScale = blockPrefab.GetComponent<Block>().BodyObjScale;
         Vector3 offset = new Vector3(0f, -blockScale.y/2, 0f);
-        gridParentObj.transform.position = middleBaseBone.gameObject.transform.position + offset;
-        gridParentObj.transform.rotation = middleBaseBone.gameObject.transform.rotation;
+        gridParentObj.transform.position = handRObj.transform.position + offset;
+        gridParentObj.transform.rotation = handRObj.transform.rotation;
     }
 
     void AdjustGridScale() {
@@ -127,22 +110,38 @@ public class BlockController : MonoBehaviour
         
     }
 
+
     public void OnHit(int id) {
+        // アクティブでないブロックに衝突した場合は無視
         if (blocks[id].state != Block.STATE.ACTIVE) return;
+
         blocks[id].OnHitHand();
+        // 現在アクティブなブロックに衝突した場合
         if (id == currentActiveBlockID) {
-            audiosourceSE.PlayOneShot(onHitSound);
-            score ++;
-            scoreText.text = score.ToString();
+            OnHitCorrectBlock();
         }
+    }
+
+    
+    void OnHitCorrectBlock() {
+        audiosourceSE.PlayOneShot(onHitSound);
+        mainController.AddScore();
     }
 
     
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R)) {
-            StartGame();
+        // プレイ中のみ実行する処理
+        if (mainController.GameState == MainController.GAME_STATE.PLAY) {
+            elapsedTime += Time.deltaTime;
+        
+            if (elapsedTime > notes[currentNoteNum].startTime) {
+                SetNextBlock();
+                currentNoteNum ++;
+            }
         }
+
+        // デバッグ用
         if (Input.GetKeyDown(KeyCode.T)) {
             AdjustGridPosition();
         }
@@ -153,8 +152,6 @@ public class BlockController : MonoBehaviour
             AdjustGridScale();
         }
 
-
-        // デバッグ用
         for (int i = 0; i <= 9; i++)
         {
             if (Input.GetKeyDown(KeyCode.Alpha0 + i))
@@ -162,95 +159,68 @@ public class BlockController : MonoBehaviour
                 OnHit(i);
             }
         }
-
-
-        if (isPlaying) {
-            elapsedTime += Time.deltaTime;
-        
-            if (elapsedTime > notesData[currentNoteNum].startTime) {
-                SetNextBlock();
-                currentNoteNum ++;
-            }
-        }
     }
 
-    void StartGame() {
-        audioSourceMusic.clip = bgm;
-        audioSourceMusic.volume = musicVolume;
-        audioSourceMusic.Play();
-        isPlaying = true;
-    }
 
-    private void SetNextBlock() {
-
+    void SetNextBlock() {
         // すべてのブロックを非アクティブにする
         foreach (var block in blocks)
         {
             block.DeactivateBlock();
         }
 
-        if (currentNoteNum < notesData.Count-1) {
+        if (currentNoteNum < notes.Count-1) {
             // 次のノーツまでの時間
-            float duration = notesData[currentNoteNum+1].startTime - notesData[currentNoteNum].startTime;
+            float duration = notes[currentNoteNum+1].startTime - notes[currentNoteNum].startTime;
             // 次のノーツを準備状態にする
-            blocks[notesData[currentNoteNum+1].blockID].ReadyBlock(duration);
+            blocks[notes[currentNoteNum+1].blockID].ReadyBlock(duration);
         }
 
-        currentActiveBlockID = notesData[currentNoteNum].blockID;
-        
-
-        
+        currentActiveBlockID = notes[currentNoteNum].blockID;
+    
         // 現在のノーツをアクティブにする
         blocks[currentActiveBlockID].ActivateBlock();
-        
-
     }
 
-    private void LoadNotes() {
 
-
-        var info = new FileInfo(Application.dataPath + "/Notes/" + bgmFileName + ".json");
-        var reader = new StreamReader (info.OpenRead ());
-        var json = reader.ReadToEnd ();
-
-
+    void LoadNotes() {
+        var info = new FileInfo(Application.dataPath + "/Notes/" + jsonFileName + ".json");
+        var reader = new StreamReader(info.OpenRead());
+        var json = reader.ReadToEnd();
         InputJson inputJson = JsonUtility.FromJson<InputJson>(json);
 
         int notesCount = inputJson.notes.Length;
+        float barToTime = 60f / (inputJson.BPM * inputJson.notes[0].LPB);
 
-        float barToTime = 60f/(inputJson.BPM*inputJson.notes[0].LPB);
-
-
-
-        var blockIDs = GenerateNonConsecutiveList(notesCount);
+        // アクティブにするブロックの番号を作成する
+        var activeBlockIDs = GenerateNonConsecutiveList(notesCount);
 
         for (int i=0; i<notesCount; i++) {
-            
-
-            NotesData note = new NotesData
+            Note note = new Note
             {
                 startTime = inputJson.notes[i].num * barToTime, 
-                blockID = blockIDs[i]
+                blockID = activeBlockIDs[i]
             };
-            notesData.Add(note);
+            notes.Add(note);
         }
-
     }
 
 
     List<int> GenerateNonConsecutiveList(int size)
     {
         List<int> nonConsecutiveList = new List<int>();
-        int previousNumber = -1; // 前の数字を保持する変数を初期化
+        // 前の数字を保持する変数を初期化
+        int previousNumber = -1; 
 
         for (int i = 0; i < size; i++)
         {
-            int randomNumber = Random.Range(0, totalGridCount); // 0から9までのランダムな整数を生成
+            // ランダムな整数を生成
+            int randomNumber = Random.Range(0, totalGridCount); 
             // 前の数字と異なる場合のみリストに追加
             if (randomNumber != previousNumber)
             {
                 nonConsecutiveList.Add(randomNumber);
-                previousNumber = randomNumber; // 前の数字を更新
+                previousNumber = randomNumber;
             }
             else
             {
@@ -261,7 +231,6 @@ public class BlockController : MonoBehaviour
 
         return nonConsecutiveList;
     }
-
 
 
 }
