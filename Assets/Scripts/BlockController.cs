@@ -118,21 +118,9 @@ public class BlockController : MonoBehaviour
     }
 
     void AdjustGridScale() {
-        // var centerToCornerDistance = Vector3.Distance(middleBaseBone.transform.position, gridCornerMarkerObj.transform.position);
-        // var originalDistance = 0.423f;
-        // var scaleMultiply = centerToCornerDistance / originalDistance;
-        // gridParentObj.transform.localScale = new Vector3(
-        //     gridParentObj.transform.localScale.x * scaleMultiply, 
-        //     gridParentObj.transform.localScale.y, 
-        //     gridParentObj.transform.localScale.z * scaleMultiply
-        // );
-
-        // Vector3 direction = (gridCornerMarkerObj.transform.position - middleBaseBone.transform.position).normalized;
-        // gridParentObj.transform.rotation = Quaternion.FromToRotation(Vector3.up, direction);
-
-        // cubeのサイズを設定する
-        float distance = Vector3.Distance(middleBaseBone.transform.position, gridCornerMarkerObj.transform.position);
-        gridParentObj.transform.localScale = new Vector3(distance / 2f , gridParentObj.transform.localScale.y, distance / 2f);
+        var blockScale = blockPrefab.GetComponent<Block>().BodyObjScale;
+        var distance = gridCornerMarkerObj.transform.position - middleBaseBone.gameObject.transform.position;
+        gridParentObj.transform.localScale = new Vector3(distance.x*2/(blockScale.x*3), gridParentObj.transform.localScale.y, distance.z*2/(blockScale.z*3));
     }
 
     void AlignGridWithTwoPoints() {

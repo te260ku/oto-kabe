@@ -7945,12 +7945,6 @@ MonoBehaviour:
   _includeChildrenAsDependents: 1
   _gameObjects: []
   _monoBehaviours: []
---- !u!1 &1718918470 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8662184560145590688, guid: 94313e563929cb3499e3989be338a213,
-    type: 3}
-  m_PrefabInstance: {fileID: 188412552}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1738652545
 GameObject:
   m_ObjectHideFlags: 0
@@ -8041,7 +8035,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1738652545}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.49, y: 0, z: 1.618}
+  m_LocalPosition: {x: 1, y: 0, z: 2}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8707,7 +8701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObj: {fileID: 1855014362}
-  sourceObj: {fileID: 1718918470}
+  sourceObj: {fileID: 53027675}
 --- !u!114 &1855014364
 MonoBehaviour:
   m_ObjectHideFlags: 0
