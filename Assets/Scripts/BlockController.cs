@@ -74,13 +74,13 @@ public class BlockController : MonoBehaviour
 
     void GenerateGrid() 
     {
-        var cubeSize = blockPrefab.GetComponent<Block>().BodyObjScale;
-        Debug.Log(cubeSize);
+        var blockScale = blockPrefab.GetComponent<Block>().BodyObjScale;
+        Debug.Log(blockScale);
         // グリッドの中心からのオフセットを計算
         Vector3 offset = new Vector3(
-            (gridWidth - 1) * cubeSize.x / 2f,
+            (gridWidth - 1) * blockScale.x / 2f,
             0f,
-            (gridHeight - 1) * cubeSize.z / 2f
+            (gridHeight - 1) * blockScale.z / 2f
         );
         int blockCount = 0;
 
@@ -90,7 +90,7 @@ public class BlockController : MonoBehaviour
             for (int z = 0; z < gridHeight; z++)
             {
                 // Cubeの位置を計算
-                Vector3 spawnPosition = new Vector3(x * cubeSize.x, 0f, z * cubeSize.z) - offset;
+                Vector3 spawnPosition = new Vector3(x * blockScale.x, 0f, z * blockScale.z) - offset;
 
                 // Cubeを作成して配置
                 GameObject blockObj = Instantiate(blockPrefab, spawnPosition, Quaternion.identity);
@@ -108,18 +108,12 @@ public class BlockController : MonoBehaviour
         
     }
 
-    public void OnHit(int id) {
-        if (blocks[id].state != Block.STATE.ACTIVE) return;
-        blocks[id].OnHitHand();
-        if (id == currentActiveBlockID) {
-            audiosourceSE.PlayOneShot(onHitSound);
-            score ++;
-            scoreText.text = score.ToString();
-        }
-    }
+    
 
     void AdjustGridPosition() {
-        gridParentObj.transform.position = middleBaseBone.gameObject.transform.position;
+        var blockScale = blockPrefab.GetComponent<Block>().BodyObjScale;
+        Vector3 offset = new Vector3(0f, -blockScale.y/2, 0f);
+        gridParentObj.transform.position = middleBaseBone.gameObject.transform.position + offset;
         gridParentObj.transform.rotation = middleBaseBone.gameObject.transform.rotation;
     }
 
@@ -133,16 +127,26 @@ public class BlockController : MonoBehaviour
         //     gridParentObj.transform.localScale.z * scaleMultiply
         // );
 
-        // // Vector3 direction = (gridCornerMarkerObj.transform.position - middleBaseBone.transform.position).normalized;
-        // // gridParentObj.transform.rotation = Quaternion.FromToRotation(Vector3.up, direction);
+        // Vector3 direction = (gridCornerMarkerObj.transform.position - middleBaseBone.transform.position).normalized;
+        // gridParentObj.transform.rotation = Quaternion.FromToRotation(Vector3.up, direction);
 
         // cubeのサイズを設定する
-        // float distance = Vector3.Distance(middleBaseBone.transform.position, gridCornerMarkerObj.transform.position);
-        // gridParentObj.transform.localScale = new Vector3(distance / 2f * 5f, gridParentObj.transform.localScale.y, distance / 2f * 5f);
+        float distance = Vector3.Distance(middleBaseBone.transform.position, gridCornerMarkerObj.transform.position);
+        gridParentObj.transform.localScale = new Vector3(distance / 2f , gridParentObj.transform.localScale.y, distance / 2f);
     }
 
     void AlignGridWithTwoPoints() {
         
+    }
+
+    public void OnHit(int id) {
+        if (blocks[id].state != Block.STATE.ACTIVE) return;
+        blocks[id].OnHitHand();
+        if (id == currentActiveBlockID) {
+            audiosourceSE.PlayOneShot(onHitSound);
+            score ++;
+            scoreText.text = score.ToString();
+        }
     }
 
     
