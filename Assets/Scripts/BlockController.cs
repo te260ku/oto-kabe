@@ -120,6 +120,7 @@ public class BlockController : MonoBehaviour
 
     void AdjustGridPosition() {
         gridParentObj.transform.position = middleBaseBone.gameObject.transform.position;
+        gridParentObj.transform.rotation = middleBaseBone.gameObject.transform.rotation;
     }
 
     void AdjustGridScale() {
