@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class BoneFollower : MonoBehaviour
 {
     [SerializeField] OVRSkeleton.BoneId targetBone;
@@ -14,9 +15,12 @@ public class BoneFollower : MonoBehaviour
 
     void Update()
     {
-        Vector3 pos = targetHandSkeleton.Bones[(int)targetBone].Transform.position;
-        Quaternion rot = targetHandSkeleton.Bones[(int)targetBone].Transform.rotation;
-        transform.position = pos;
-        transform.rotation = rot;
+        if (targetHandSkeleton.Bones.Count > 0) {
+            Vector3 pos = targetHandSkeleton.Bones[(int)targetBone].Transform.position;
+            Quaternion rot = targetHandSkeleton.Bones[(int)targetBone].Transform.rotation;
+            transform.position = pos;
+            transform.rotation = rot;
+        }
+        
     }
 }
