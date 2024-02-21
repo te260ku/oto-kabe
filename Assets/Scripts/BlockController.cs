@@ -36,6 +36,8 @@ public class BlockController : MonoBehaviour
     [SerializeField] GameObject gridCornerMarkerObj;
     [SerializeField] BoneFollower middleBaseBone;
     [SerializeField] BoneFollower middleTipBone;
+    [SerializeField] BoneFollower indexTipBone;
+    [SerializeField] BoneFollower ringTipBone;
     [SerializeField] GameObject handRObj;
     [SerializeField] GameObject debugAxis;
     public class Note {
@@ -95,9 +97,24 @@ public class BlockController : MonoBehaviour
 
     void AdjustGridPosition() {
         var blockScale = blockPrefab.GetComponent<Block>().BodyObjScale;
-        Vector3 offset = new Vector3(0f, -blockScale.y/2, 0f);
-        gridParentObj.transform.position = handRObj.transform.position + offset;
-        gridParentObj.transform.rotation = handRObj.transform.rotation;
+        float multiply = 4f;
+        Vector3 positionOffset = new Vector3(0f, -blockScale.y/2 * multiply, 0f);
+        gridParentObj.transform.localPosition = handRObj.transform.position;
+        foreach (Transform block in gridParentObj.transform)
+        {
+            block.transform.localPosition = new Vector3(block.transform.localPosition.x, positionOffset.y, block.transform.localPosition.z);
+        }
+
+        Vector3 indexTipBonePosition = indexTipBone.gameObject.transform.position;
+        Vector3 middleTipBonePosition = middleTipBone.gameObject.transform.position;
+        Vector3 ringTipBonePosition = ringTipBone.gameObject.transform.position;
+
+        Vector3 v1 = middleTipBonePosition - indexTipBonePosition;
+        Vector3 v2 = ringTipBonePosition - indexTipBonePosition;
+
+        Vector3 normal = Vector3.Cross(v1, v2).normalized;
+
+        gridParentObj.transform.rotation = Quaternion.FromToRotation(gridParentObj.transform.up, normal) * gridParentObj.transform.rotation;
     }
 
     void AdjustGridScale() {
