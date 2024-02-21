@@ -88,6 +88,7 @@ public class Block : MonoBehaviour
 
     public void OnHitHand() 
     {
+        if (state != STATE.ACTIVE) return;
         DeactivateBlock();
         onHitHandParticle.Play();
     }
