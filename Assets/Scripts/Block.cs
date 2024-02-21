@@ -12,7 +12,6 @@ public class Block : MonoBehaviour
         READY, 
     }
     public STATE state;
-    private float timer = 0.0f;
     int blockID;
     public int BlockID
     {
@@ -29,12 +28,14 @@ public class Block : MonoBehaviour
     {
         get { return bodyObj.transform.localScale; }
     }
+    Color initialColor;
 
 
 
     void Start()
     {
         blockRenderer = bodyObj.GetComponent<Renderer>();
+        initialColor = blockRenderer.material.color;
     }
 
     public void Initialize(int id) {
@@ -68,7 +69,7 @@ public class Block : MonoBehaviour
     public void DeactivateBlock() {
         if (state == STATE.IDLE) return;
         state = STATE.IDLE;
-        blockRenderer.material.color = Color.white;
+        blockRenderer.material.color = initialColor;
     }
     public void ReadyBlock(float duration) {
         if (state == STATE.READY) return;
