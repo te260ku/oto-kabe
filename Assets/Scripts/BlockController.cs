@@ -96,7 +96,7 @@ public class BlockController : MonoBehaviour
 
     
 
-    void AdjustGridPosition() {
+    public void AdjustGridPosition() {
         var blockScale = blockPrefab.GetComponent<Block>().BodyObjScale;
         float multiply = 4f;
         Vector3 positionOffset = new Vector3(0f, -blockScale.y/2 * multiply, 0f);
@@ -118,14 +118,10 @@ public class BlockController : MonoBehaviour
         gridParentObj.transform.rotation = Quaternion.FromToRotation(gridParentObj.transform.up, normal) * gridParentObj.transform.rotation;
     }
 
-    void AdjustGridScale() {
+    public void AdjustGridScale() {
         var blockScale = blockPrefab.GetComponent<Block>().BodyObjScale;
         var distance = gridCornerMarkerObj.transform.position - middleBaseBone.gameObject.transform.position;
         gridParentObj.transform.localScale = new Vector3(distance.x*2/(blockScale.x*3), gridParentObj.transform.localScale.y, distance.z*2/(blockScale.z*3));
-    }
-
-    void AlignGridWithTwoPoints() {
-        
     }
 
 
@@ -162,9 +158,6 @@ public class BlockController : MonoBehaviour
         // デバッグ用
         if (Input.GetKeyDown(KeyCode.T)) {
             AdjustGridPosition();
-        }
-        if (Input.GetKeyDown(KeyCode.Y)) {
-            AlignGridWithTwoPoints();
         }
         if (Input.GetKeyDown(KeyCode.U)) {
             AdjustGridScale();

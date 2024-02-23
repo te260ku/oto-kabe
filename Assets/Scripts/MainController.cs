@@ -33,7 +33,7 @@ public class MainController : MonoBehaviour
         }
     }
 
-    void StartGame() {
+    public void StartGame() {
         musicController.StartGame();
         gameState = GAME_STATE.PLAY;
     }
