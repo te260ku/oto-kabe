@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using Microsoft.Unity.VisualStudio.Editor;
+using Oculus.Interaction;
 
 public class PassthroughStateController : MonoBehaviour
 {
     [SerializeField] OVRPassthroughLayer OVRPassthroughLayer;
+    [SerializeField] Color ONColor;
+    [SerializeField] Color OFFColor;
+    [SerializeField] TextMeshPro buttonText;
     bool passthroughIsON;
 
     void Start()
@@ -14,15 +20,23 @@ public class PassthroughStateController : MonoBehaviour
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.P)) {
+            SwitchPassthroughState();
+        }
     }
 
     public void SwitchPassthroughState() {
-        if (passthroughIsON) {
-            OVRPassthroughLayer.textureOpacity = 1.0f;
-        } else {
-            OVRPassthroughLayer.textureOpacity = 0.0f;
-        }
         passthroughIsON = !passthroughIsON;
+        string text = "Passthrough: ";
+        if (passthroughIsON) {
+            // オン
+            OVRPassthroughLayer.textureOpacity = 1.0f;
+            text += "ON";
+        } else {
+            // オフ
+            OVRPassthroughLayer.textureOpacity = 0.0f;
+            text += "OFF";
+        }
+        buttonText.text = text;
     }
 }
