@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Microsoft.Unity.VisualStudio.Editor;
-using Oculus.Interaction;
 
 public class PassthroughStateController : MonoBehaviour
 {
