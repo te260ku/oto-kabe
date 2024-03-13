@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PassthroughStateController : MonoBehaviour
 {
@@ -9,11 +10,12 @@ public class PassthroughStateController : MonoBehaviour
     [SerializeField] Color ONColor;
     [SerializeField] Color OFFColor;
     [SerializeField] TextMeshPro buttonText;
+    [SerializeField] Slider passthroughOpacitySlider;
     bool passthroughIsON;
 
     void Start()
     {
-        
+        passthroughOpacitySlider.onValueChanged.AddListener(ChangePassthroughOpacity);
     }
 
     void Update()
@@ -21,6 +23,10 @@ public class PassthroughStateController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P)) {
             SwitchPassthroughState();
         }
+    }
+
+    void ChangePassthroughOpacity(float value) {
+        OVRPassthroughLayer.textureOpacity = value;
     }
 
     public void SwitchPassthroughState() {
