@@ -156,6 +156,7 @@ public class BlockController : MonoBehaviour
         }
 
         // デバッグ用
+        // ---
         if (Input.GetKeyDown(KeyCode.T)) {
             AdjustGridPosition();
         }
@@ -170,6 +171,7 @@ public class BlockController : MonoBehaviour
                 OnHit(i);
             }
         }
+        // ---
     }
 
 

@@ -3,10 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+public enum HandGesture {
+    None, ThumbsUp
+}
+
 public class HandGestureDetector : MonoBehaviour
 {
     [SerializeField] OVRHand hand;
     [SerializeField] TextMeshProUGUI text;
+    HandGesture currentHandGesture;
+    public HandGesture CurrentHandGesture {
+        get {
+            return currentHandGesture;
+        }
+        set {
+            currentHandGesture = value;
+        }
+    }
+    
     
     void Start()
     {
@@ -15,11 +29,17 @@ public class HandGestureDetector : MonoBehaviour
 
     void Update()
     {
-        text.text = Guu().ToString();
+        text.text = IsThumbsUp().ToString();
+
+        if (IsThumbsUp()) {
+            CurrentHandGesture = HandGesture.ThumbsUp;
+        } else {
+            CurrentHandGesture = HandGesture.None;
+        }
+        
     }
 
-    public bool Guu()
-    {
-        return hand.GetFingerPinchStrength(OVRHand.HandFinger.Index) >= 0.4f && hand.GetFingerPinchStrength(OVRHand.HandFinger.Middle) >= 0.4f;   
+    bool IsThumbsUp() {
+        return hand.GetFingerPinchStrength(OVRHand.HandFinger.Pinky) >=0.05f && hand.GetFingerPinchStrength(OVRHand.HandFinger.Ring) >= 0.2f;
     }
 }
